@@ -8,7 +8,7 @@ public class Bottle {
      * Mỗi lọ thủy tinh là một stack chứa các dung dịch với màu của nó.
      * Và phải đổ từ trên xuống dưới theo thứ tự của stack luôn nên tổ chức stack là hợp lý
      */
-    private final Stack<WaterColor> waters = new Stack<>();;
+    private final Stack<WaterColor> waters = new Stack<>();
 
     //Tạo lọ từ list các màu, thứ tự thì vẫn là index 0 sẽ ra sau cùng
     public Bottle(List<WaterColor> waters) {
@@ -71,6 +71,22 @@ public class Bottle {
 
     public String toString(){
         return this.waters.toString();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof Bottle bottle)) {
+            return false;
+        }
+        return waters.equals(bottle.waters);
+    }
+
+    @Override
+    public int hashCode() {
+        return waters.hashCode();
     }
 
 }

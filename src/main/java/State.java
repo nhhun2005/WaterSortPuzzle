@@ -36,11 +36,7 @@ public class State {
                     continue;
                 }
                 State temp = new State(this);
-                if(isEnd()){
-                    GameManager.isEnd = true;
-                    printBottles();
-                }
-                if(temp.bottles.get(i).pourTo(temp.bottles.get(j))&&!GameManager.visited.contains(temp)){
+                if(temp.bottles.get(i).pourTo(temp.bottles.get(j))){
                     states.add(temp);
                 }
             }
@@ -54,6 +50,22 @@ public class State {
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof State state)) {
+            return false;
+        }
+        return bottles.equals(state.bottles);
+    }
+
+    @Override
+    public int hashCode() {
+        return bottles.hashCode();
     }
 
 }
