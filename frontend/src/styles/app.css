@@ -1,0 +1,7 @@
+.app {
+  min-height: 100svh;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(77, 201, 255, 0.16), rgba(255, 213, 79, 0.12)),
+    linear-gradient(180deg, #f7fdff 0%, #fff8fb 48%, #fffbe8 100%);
+}

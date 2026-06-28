@@ -1,0 +1,100 @@
+@media (max-width: 860px) {
+  .screen {
+    padding: 14px;
+  }
+
+  .home-screen,
+  .solver-layout,
+  .visual-layout {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .home-copy h1,
+  .top-bar h1 {
+    font-size: 32px;
+  }
+
+  .top-bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .top-bar .button {
+    width: 100%;
+  }
+
+  .game-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .stat-card {
+    min-height: 64px;
+    padding: 10px;
+  }
+
+  .stat-card strong {
+    font-size: 20px;
+  }
+
+  .bottle-rack {
+    grid-template-columns: repeat(4, minmax(64px, 1fr));
+    gap: 16px 6px;
+  }
+
+  .bottle-button {
+    width: 72px;
+    min-height: 166px;
+  }
+
+  .bottle-shell {
+    width: 54px;
+    height: 134px;
+    padding: 10px 6px 6px;
+  }
+
+  .status-strip,
+  .result-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .toolbar .button,
+  .modal-actions .button {
+    flex: 1 1 100%;
+  }
+
+  .step-list li {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+
+  .step-list button {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+
+  .step-list small {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 430px) {
+  .home-copy,
+  .home-board,
+  .game-panel,
+  .visual-panel,
+  .visual-steps,
+  .solver-preview,
+  .solver-controls,
+  .result-panel,
+  .algorithm-band {
+    padding: 14px;
+  }
+
+  .bottle-rack {
+    grid-template-columns: repeat(3, minmax(72px, 1fr));
+  }
+
+  .game-stats {
+    grid-template-columns: 1fr;
+  }
+}
