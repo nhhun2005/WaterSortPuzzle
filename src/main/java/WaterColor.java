@@ -3,5 +3,6 @@ public enum WaterColor {
     GREEN,
     BLUE,
     YELLOW,
-    PURPLE
+    PURPLE,
+    CYAN
 }

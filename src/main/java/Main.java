@@ -1,15 +1,37 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        GameManager gameManager = new GameManager();
+        List<WaterColor> b1 = new ArrayList<>();
+        b1.add(WaterColor.YELLOW);
+        b1.add(WaterColor.YELLOW);
+        b1.add(WaterColor.YELLOW);
+        b1.add(WaterColor.CYAN);
+        gameManager.addBottle(new Bottle(b1));
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+        List<WaterColor> b2 = new ArrayList<>();
+        b2.add(WaterColor.BLUE);
+        b2.add(WaterColor.BLUE);
+        b2.add(WaterColor.CYAN);
+        b2.add(WaterColor.CYAN);
+        gameManager.addBottle(new Bottle(b2));
+
+        List<WaterColor> b3 = new ArrayList<>();
+        b3.add(WaterColor.BLUE);
+        b3.add(WaterColor.BLUE);
+        b3.add(WaterColor.CYAN);
+        b3.add(WaterColor.YELLOW);
+        gameManager.addBottle(new Bottle(b3));
+
+        List<WaterColor> b4 = new ArrayList<>();
+        gameManager.addBottle(new Bottle(b4));
+
+        List<WaterColor> b5 = new ArrayList<>();
+        gameManager.addBottle(new Bottle(b5));
+
+        gameManager.printBottles();
+
     }
 }
