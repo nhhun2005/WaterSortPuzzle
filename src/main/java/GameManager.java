@@ -1,27 +1,25 @@
-import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class GameManager {
-    private final List<Bottle> bottles = new ArrayList<>();
+    public static final HashSet<State> visited = new HashSet<>();
+    public static boolean isEnd = false;
 
-    public void addBottle(Bottle bottle) {
-        bottles.add(bottle);
-    }
+    public void BFS(State state){
+        visited.clear();
 
-    public void printBottles() {
-        int index = 1;
-        for (Bottle bottle : bottles) {
-            System.out.println("Lọ thứ: "+index++);
-            System.out.println(bottle);
-            System.out.println("________________");
+        Queue<State> queue = new LinkedList<>();
+        visited.add(state);
+        queue.addAll(state.performOperators());
+        while(!queue.isEmpty()){
+            State current = queue.poll();
+            queue.addAll(current.performOperators());
+            if(isEnd){
+                return;
+            }
         }
-    }
-
-
-    public void bruteForce(){
-        System.out.println("Trạng thái ban đầu:");
-        printBottles();
 
     }
+
 }

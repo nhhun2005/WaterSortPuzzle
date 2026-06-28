@@ -3,7 +3,7 @@ import java.util.Stack;
 
 public class Bottle {
     // Chiều cao của mỗi lọ
-    public static int MAX_HEIGHT = 4;
+    public static final int MAX_HEIGHT = 4;
     /**
      * Mỗi lọ thủy tinh là một stack chứa các dung dịch với màu của nó.
      * Và phải đổ từ trên xuống dưới theo thứ tự của stack luôn nên tổ chức stack là hợp lý
@@ -17,12 +17,17 @@ public class Bottle {
         }
         this.waters.addAll(waters);
     }
-
+    public Bottle(Bottle bottle){
+        this.waters.addAll(bottle.waters);
+    }
     public Stack<WaterColor> getWaters() {
         return waters;
     }
 
     public boolean pourTo(Bottle other){
+        if(this==other){
+            return false;
+        }
         if(this.waters.isEmpty()){
             return false; //Lọ rỗng không đổ được
         }
