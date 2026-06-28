@@ -1,4 +1,4 @@
-(Short translate at the end)
+(Short english translate at the end)
 
 **Chủ đề 11: Trò chơi Water Sort Puzzle**
 
