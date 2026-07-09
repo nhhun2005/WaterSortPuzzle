@@ -34,7 +34,18 @@ public class Main {
         state.printBottles();
 
         GameManager gm = new GameManager();
-        gm.BFS(state);
+        for (Algorithm algorithm : Algorithm.values()) {
+            SolverResult result = gm.solve(new State(state), algorithm);
+            System.out.println("==============================");
+            System.out.println(result);
+
+            if (result.isSolved()) {
+                System.out.println("Solution moves:");
+                for (Move move : result.getMoves()) {
+                    System.out.println(move);
+                }
+            }
+        }
 
     }
 }

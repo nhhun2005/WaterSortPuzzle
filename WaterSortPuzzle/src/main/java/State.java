@@ -28,8 +28,8 @@ public class State {
         }
     }
 
-    public List<State> performOperators(){
-        List<State> states = new ArrayList<>();
+    public List<NextState> generateNextStates() {
+        List<NextState> nextStates = new ArrayList<>();
         for(int i = 0 ; i< bottles.size() ; i++){
             for(int j = 0 ; j<bottles.size() ; j++){
                 if(i==j){
@@ -37,9 +37,21 @@ public class State {
                 }
                 State temp = new State(this);
                 if(temp.bottles.get(i).pourTo(temp.bottles.get(j))){
-                    states.add(temp);
+                    nextStates.add(new NextState(
+                            temp,
+                            new Move(i, j),
+                            1
+                    ));
                 }
             }
+        }
+        return nextStates;
+    }
+
+    public List<State> performOperators(){
+        List<State> states = new ArrayList<>();
+        for (NextState nextState : generateNextStates()) {
+            states.add(nextState.getState());
         }
         return states;
     }
