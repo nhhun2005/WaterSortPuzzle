@@ -25,7 +25,7 @@ function SolverScreen({
             Back Home
           </Button>
         }
-        subtitle="Mocked frontend result until Java integration is connected"
+        subtitle="Search algorithms run entirely in the frontend"
         title="AI Solver"
       />
 

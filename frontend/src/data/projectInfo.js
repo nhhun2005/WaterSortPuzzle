@@ -13,7 +13,7 @@ export const INFO_ITEMS = [
   },
   {
     title: 'Goal test',
-    body: 'Every bottle is empty or filled with 4 layers of the same color, matching the Java goal test.',
+    body: 'Every bottle is empty or filled with 4 layers of the same color.',
   },
   {
     title: 'Path cost',

@@ -1,34 +1,47 @@
 import { useMemo, useState } from 'react'
 import { HEURISTICS, algorithmUsesHeuristic } from '../constants/game'
-import { ALGORITHM_STATS, MOCK_SOLUTION_STEPS } from '../data/solverMock'
 import { buildTimeline } from '../lib/gameLogic'
+import { solve } from '../solver'
 
+/**
+ * useSolver
+ * ---------
+ * Owns the solver UI state and runs the search entirely in the frontend
+ * (see src/solver). It exposes the selected algorithm/heuristic, the computed
+ * result, and a step-by-step timeline for the visualizer.
+ */
 export function useSolver(initialBottles) {
   const [algorithm, setAlgorithm] = useState('BFS')
   const [heuristic, setHeuristic] = useState(HEURISTICS[0])
   const [solverResult, setSolverResult] = useState(null)
+  const [solutionSteps, setSolutionSteps] = useState([])
   const [visualStep, setVisualStep] = useState(0)
 
-  const solverTimeline = useMemo(
-    () => buildTimeline(initialBottles, MOCK_SOLUTION_STEPS),
-    [initialBottles],
-  )
   const usesHeuristic = algorithmUsesHeuristic(algorithm)
+
+  const solverTimeline = useMemo(
+    () => buildTimeline(initialBottles, solutionSteps),
+    [initialBottles, solutionSteps],
+  )
   const maxStep = solverTimeline.length - 1
   const currentTimelineState = solverTimeline[visualStep] ?? solverTimeline[0]
 
   function findSolution() {
-    const baseStats = ALGORITHM_STATS[algorithm]
+    const result = solve(initialBottles, algorithm, usesHeuristic ? heuristic : undefined)
+    const steps = result.moves
 
+    setSolutionSteps(steps)
     setSolverResult({
       algorithm,
       heuristic: usesHeuristic ? heuristic : null,
-      steps: MOCK_SOLUTION_STEPS,
+      solved: result.solved,
+      steps,
       stats: {
-        steps: MOCK_SOLUTION_STEPS.length,
-        visited: baseStats.visited,
-        time: baseStats.time,
-        note: baseStats.note,
+        steps: steps.length,
+        visited: result.visited,
+        explored: result.explored,
+        time: `${(result.timeMs / 1000).toFixed(3)}s`,
+        note: buildNote(result, algorithm),
       },
     })
     setVisualStep(0)
@@ -58,8 +71,24 @@ export function useSolver(initialBottles) {
     setAlgorithm,
     setHeuristic,
     solverResult,
-    steps: MOCK_SOLUTION_STEPS,
+    steps: solutionSteps,
     usesHeuristic,
     visualStep,
   }
+}
+
+function buildNote(result, algorithm) {
+  if (!result.solved) {
+    return 'No solution found for this state.'
+  }
+
+  const notes = {
+    BFS: 'Shortest path in moves (optimal).',
+    DFS: 'Depth-first route (not guaranteed shortest).',
+    UCS: 'Lowest uniform action cost (optimal).',
+    Greedy: 'Heuristic-first estimate (fast, not optimal).',
+    'A*': 'Cost plus heuristic (optimal with admissible h).',
+  }
+
+  return notes[algorithm] ?? 'Solution found.'
 }
