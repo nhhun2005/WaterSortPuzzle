@@ -8,14 +8,27 @@ export function createSolvedPuzzle() {
 }
 
 export function generateRandomPuzzle({ minMoves = 40, maxMoves = 80 } = {}) {
-  const shuffleMoves = randomInt(minMoves, maxMoves)
-  let current = createSolvedPuzzle()
+  for (let attempt = 0; attempt < 50; attempt += 1) {
+    const shuffleMoves = randomInt(minMoves, maxMoves)
+    let current = createSolvedPuzzle()
+    let appliedMoves = 0
 
-  for (let step = 0; step < shuffleMoves || isWinState(current); step += 1) {
-    current = applyReverseShuffleMove(current)
+    for (let step = 0; step < shuffleMoves; step += 1) {
+      const next = applyReverseShuffleMove(current)
+      if (!next) {
+        break
+      }
+
+      current = next
+      appliedMoves += 1
+    }
+
+    if (appliedMoves >= minMoves && !isWinState(current)) {
+      return cloneBottles(current)
+    }
   }
 
-  return cloneBottles(current)
+  return createSolvedPuzzle()
 }
 
 function applyReverseShuffleMove(bottles) {
@@ -48,6 +61,10 @@ function applyReverseShuffleMove(bottles) {
         }
       }
     }
+  }
+
+  if (moves.length === 0) {
+    return null
   }
 
   const move = moves[randomInt(0, moves.length - 1)]
