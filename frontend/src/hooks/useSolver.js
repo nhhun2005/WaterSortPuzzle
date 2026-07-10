@@ -1,41 +1,47 @@
-import { useMemo, useState } from 'react'
-import { HEURISTICS, algorithmUsesHeuristic } from '../constants/game'
-import { buildTimeline } from '../lib/gameLogic'
+import { useState } from 'react'
+import {
+  BOTTLE_COUNT,
+  CAPACITY,
+  COLOR_LABELS,
+  HEURISTICS,
+  PUZZLE_COLORS,
+  algorithmUsesHeuristic,
+} from '../constants/game'
 import { solve } from '../solver'
 
-/**
- * useSolver
- * ---------
- * Owns the solver UI state and runs the search entirely in the frontend
- * (see src/solver). It exposes the selected algorithm/heuristic, the computed
- * result, and a step-by-step timeline for the visualizer.
- */
-export function useSolver(initialBottles) {
+export function useSolver() {
   const [algorithm, setAlgorithm] = useState('BFS')
   const [heuristic, setHeuristic] = useState(HEURISTICS[0])
   const [solverResult, setSolverResult] = useState(null)
-  const [solutionSteps, setSolutionSteps] = useState([])
-  const [visualStep, setVisualStep] = useState(0)
+  const [validationError, setValidationError] = useState('')
 
   const usesHeuristic = algorithmUsesHeuristic(algorithm)
 
-  const solverTimeline = useMemo(
-    () => buildTimeline(initialBottles, solutionSteps),
-    [initialBottles, solutionSteps],
-  )
-  const maxStep = solverTimeline.length - 1
-  const currentTimelineState = solverTimeline[visualStep] ?? solverTimeline[0]
+  function clearResult() {
+    setSolverResult(null)
+    setValidationError('')
+  }
 
-  function findSolution() {
-    const result = solve(initialBottles, algorithm, usesHeuristic ? heuristic : undefined)
+  function findSolution(bottles) {
+    const error = validatePuzzle(bottles)
+    setValidationError(error)
+
+    if (error) {
+      setSolverResult(null)
+      return false
+    }
+
+    const result = solve(bottles, algorithm, usesHeuristic ? heuristic : undefined)
     const steps = result.moves
 
-    setSolutionSteps(steps)
     setSolverResult({
       algorithm,
       heuristic: usesHeuristic ? heuristic : null,
       solved: result.solved,
       steps,
+      searchTree: result.searchTree,
+      truncated: result.truncated,
+      usesHeuristic,
       stats: {
         steps: steps.length,
         visited: result.visited,
@@ -44,51 +50,71 @@ export function useSolver(initialBottles) {
         note: buildNote(result, algorithm),
       },
     })
-    setVisualStep(0)
-  }
-
-  function nextStep() {
-    setVisualStep((step) => Math.min(step + 1, maxStep))
-  }
-
-  function previousStep() {
-    setVisualStep((step) => Math.max(step - 1, 0))
-  }
-
-  function selectStep(stepNumber) {
-    setVisualStep(Math.min(Math.max(stepNumber, 0), maxStep))
+    return true
   }
 
   return {
     algorithm,
-    currentTimelineState,
+    clearResult,
     findSolution,
     heuristic,
-    maxStep,
-    nextStep,
-    previousStep,
-    selectStep,
     setAlgorithm,
     setHeuristic,
     solverResult,
-    steps: solutionSteps,
+    validationError,
     usesHeuristic,
-    visualStep,
   }
 }
 
 function buildNote(result, algorithm) {
   if (!result.solved) {
-    return 'No solution found for this state.'
+    return 'Khong tim thay loi giai cho trang thai nay.'
   }
 
   const notes = {
-    BFS: 'Shortest path in moves (optimal).',
-    DFS: 'Depth-first route (not guaranteed shortest).',
-    UCS: 'Lowest uniform action cost (optimal).',
-    Greedy: 'Heuristic-first estimate (fast, not optimal).',
-    'A*': 'Cost plus heuristic (optimal with admissible h).',
+    BFS: 'Tim theo chieu rong, dam bao it nuoc di nhat khi moi buoc co cung chi phi.',
+    DFS: 'Tim theo chieu sau, khong dam bao duong di ngan nhat.',
+    UCS: 'Tim theo chi phi deu, toi uu khi moi hanh dong co chi phi 1.',
+    Greedy: 'Uu tien trang thai co heuristic tot nhat, nhanh nhung khong dam bao toi uu.',
+    'A*': 'Ket hop chi phi da di va heuristic de huong den loi giai.',
   }
 
-  return notes[algorithm] ?? 'Solution found.'
+  return notes[algorithm] ?? 'Da tim thay loi giai.'
+}
+
+export function validatePuzzle(bottles) {
+  if (bottles.length !== BOTTLE_COUNT) {
+    return `Bai toan phai co dung ${BOTTLE_COUNT} lo.`
+  }
+
+  const counts = Object.fromEntries(PUZZLE_COLORS.map((color) => [color, 0]))
+  let totalLayers = 0
+
+  for (let bottleIndex = 0; bottleIndex < bottles.length; bottleIndex += 1) {
+    const bottle = bottles[bottleIndex]
+
+    if (bottle.length > CAPACITY) {
+      return `Lo ${bottleIndex + 1} vuot qua suc chua ${CAPACITY} lop.`
+    }
+
+    for (const color of bottle) {
+      if (!PUZZLE_COLORS.includes(color)) {
+        return `Lo ${bottleIndex + 1} co mau khong hop le.`
+      }
+      counts[color] += 1
+      totalLayers += 1
+    }
+  }
+
+  if (totalLayers !== PUZZLE_COLORS.length * CAPACITY) {
+    return `Bai toan phai co dung ${PUZZLE_COLORS.length * CAPACITY} lop mau.`
+  }
+
+  for (const color of PUZZLE_COLORS) {
+    if (counts[color] !== CAPACITY) {
+      return `Mau ${COLOR_LABELS[color]} phai xuat hien dung ${CAPACITY} lan.`
+    }
+  }
+
+  return ''
 }

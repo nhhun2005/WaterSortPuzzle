@@ -1,5 +1,9 @@
 import { generateNextStates, isEnd, serializeState } from '../core/state'
-import { createNode, reconstructMoves } from '../core/searchNode'
+import {
+  createNode,
+  createSearchTreeTracker,
+  reconstructMoves,
+} from '../core/searchNode'
 
 /**
  * Breadth-First Search.
@@ -18,47 +22,58 @@ export function bfs(initialBottles) {
   const queue = []
   let head = 0 // index-based dequeue to avoid O(n) Array.shift
   let exploredStates = 0
+  const tree = createSearchTreeTracker()
 
   const rootKey = serializeState(initialBottles)
-  queue.push(createNode(initialBottles, null, null, 0, 0, 0))
+  const root = createNode(initialBottles, null, null, 0, 0, 0)
+  tree.add(root, rootKey)
+  queue.push(root)
   visited.add(rootKey)
 
   while (head < queue.length) {
     const current = queue[head]
     head += 1
     exploredStates += 1
+    tree.markExpanded(current)
 
     if (isEnd(current.bottles)) {
-      return buildResult(true, current, visited.size, exploredStates, startTime)
+      return buildResult(true, current, visited.size, exploredStates, startTime, tree)
     }
 
     for (const next of generateNextStates(current.bottles)) {
       const key = serializeState(next.bottles)
       if (!visited.has(key)) {
         visited.add(key)
-        queue.push(
-          createNode(
-            next.bottles,
-            current,
-            next.move,
-            current.depth + 1,
-            current.cost + next.cost,
-            0,
-          ),
+        const child = createNode(
+          next.bottles,
+          current,
+          next.move,
+          current.depth + 1,
+          current.cost + next.cost,
+          0,
         )
+        tree.add(child, key)
+        queue.push(child)
       }
     }
   }
 
-  return buildResult(false, null, visited.size, exploredStates, startTime)
+  return buildResult(false, null, visited.size, exploredStates, startTime, tree)
 }
 
-function buildResult(solved, goalNode, visited, explored, startTime) {
+function buildResult(solved, goalNode, visited, explored, startTime, tree) {
+  if (solved) {
+    tree.markGoal(goalNode)
+    tree.markSolutionPath(goalNode)
+  }
+  const treeResult = tree.getResult()
   return {
     solved,
     moves: solved ? reconstructMoves(goalNode) : [],
     visited,
     explored,
     timeMs: performance.now() - startTime,
+    searchTree: treeResult.searchTree,
+    truncated: treeResult.truncated,
   }
 }

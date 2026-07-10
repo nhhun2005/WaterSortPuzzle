@@ -1,5 +1,10 @@
 import { generateNextStates, isEnd, serializeState } from '../core/state'
-import { createNode, fScore, reconstructMoves } from '../core/searchNode'
+import {
+  createNode,
+  createSearchTreeTracker,
+  fScore,
+  reconstructMoves,
+} from '../core/searchNode'
 import { PriorityQueue } from '../core/priorityQueue'
 import { getHeuristic } from '../heuristics'
 
@@ -26,11 +31,12 @@ export function astar(initialBottles, heuristicLabel) {
   const frontier = new PriorityQueue((a, b) => fScore(a) - fScore(b))
   const bestCost = new Map()
   let exploredStates = 0
+  const tree = createSearchTreeTracker()
 
   const rootKey = serializeState(initialBottles)
-  frontier.push(
-    createNode(initialBottles, null, null, 0, 0, heuristic(initialBottles)),
-  )
+  const root = createNode(initialBottles, null, null, 0, 0, heuristic(initialBottles))
+  tree.add(root, rootKey)
+  frontier.push(root)
   bestCost.set(rootKey, 0)
 
   while (!frontier.isEmpty()) {
@@ -44,9 +50,10 @@ export function astar(initialBottles, heuristicLabel) {
     }
 
     exploredStates += 1
+    tree.markExpanded(current)
 
     if (isEnd(current.bottles)) {
-      return buildResult(true, current, bestCost.size, exploredStates, startTime)
+      return buildResult(true, current, bestCost.size, exploredStates, startTime, tree)
     }
 
     for (const next of generateNextStates(current.bottles)) {
@@ -56,29 +63,36 @@ export function astar(initialBottles, heuristicLabel) {
 
       if (oldCost === undefined || newCost < oldCost) {
         bestCost.set(key, newCost)
-        frontier.push(
-          createNode(
-            next.bottles,
-            current,
-            next.move,
-            current.depth + 1,
-            newCost,
-            heuristic(next.bottles),
-          ),
+        const child = createNode(
+          next.bottles,
+          current,
+          next.move,
+          current.depth + 1,
+          newCost,
+          heuristic(next.bottles),
         )
+        tree.add(child, key)
+        frontier.push(child)
       }
     }
   }
 
-  return buildResult(false, null, bestCost.size, exploredStates, startTime)
+  return buildResult(false, null, bestCost.size, exploredStates, startTime, tree)
 }
 
-function buildResult(solved, goalNode, visited, explored, startTime) {
+function buildResult(solved, goalNode, visited, explored, startTime, tree) {
+  if (solved) {
+    tree.markGoal(goalNode)
+    tree.markSolutionPath(goalNode)
+  }
+  const treeResult = tree.getResult()
   return {
     solved,
     moves: solved ? reconstructMoves(goalNode) : [],
     visited,
     explored,
     timeMs: performance.now() - startTime,
+    searchTree: treeResult.searchTree,
+    truncated: treeResult.truncated,
   }
 }
