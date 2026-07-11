@@ -42,23 +42,23 @@ function SolverScreen({
         action={
           <div className="toolbar compact-toolbar">
             <Button variant="secondary" onClick={resetSolvedPuzzle}>
-              Trang thai dich
+              Trạng thái đích
             </Button>
             <Button variant="primary" onClick={createRandomPuzzle}>
-              Tao bai ngau nhien
+              Tạo bài ngẫu nhiên
             </Button>
           </div>
         }
-        subtitle="Mot trang duy nhat de nhap bai, chon thuat toan va xem cay tim kiem"
-        title="Bo giai Water Sort"
+        subtitle="Một trang duy nhất để nhập bài, chọn thuật toán và xem cây tìm kiếm"
+        title="Bộ giải Water Sort"
       />
 
       <div className="solver-layout">
         <div className="solver-preview">
           <div className="section-heading">
             <div>
-              <h2>Trang thai bai toan</h2>
-              <p>Co dinh 8 lo, 6 mau, moi lo chua toi da 4 lop.</p>
+              <h2>Trạng thái bài toán</h2>
+              <p>Cố định 8 lọ, 6 màu, mỗi lọ chứa tối đa 4 lớp.</p>
             </div>
           </div>
           <BottleRack bottles={bottles} compact />
@@ -66,23 +66,23 @@ function SolverScreen({
 
         <div className="solver-controls">
           <SelectorGroup
-            label="Thuat toan"
+            label="Thuật toán"
             onChange={onAlgorithmChange}
             options={ALGORITHMS}
             value={algorithm}
           />
           {usesHeuristic ? (
             <SelectorGroup
-              label="Ham heuristic"
+              label="Hàm heuristic"
               onChange={onHeuristicChange}
               options={HEURISTIC_OPTIONS}
               value={heuristic}
             />
           ) : (
-            <p className="solver-note">Thuat toan nay khong su dung heuristic.</p>
+            <p className="solver-note">Thuật toán này không sử dụng heuristic.</p>
           )}
           <Button variant="primary" onClick={() => onFindSolution(bottles)}>
-            Tim loi giai
+            Tìm lời giải
           </Button>
         </div>
       </div>

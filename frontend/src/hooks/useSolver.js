@@ -68,23 +68,23 @@ export function useSolver() {
 
 function buildNote(result, algorithm) {
   if (!result.solved) {
-    return 'Khong tim thay loi giai cho trang thai nay.'
+    return 'Không tìm thấy lời giải cho trạng thái này.'
   }
 
   const notes = {
-    BFS: 'Tim theo chieu rong, dam bao it nuoc di nhat khi moi buoc co cung chi phi.',
-    DFS: 'Tim theo chieu sau, khong dam bao duong di ngan nhat.',
-    UCS: 'Tim theo chi phi deu, toi uu khi moi hanh dong co chi phi 1.',
-    Greedy: 'Uu tien trang thai co heuristic tot nhat, nhanh nhung khong dam bao toi uu.',
-    'A*': 'Ket hop chi phi da di va heuristic de huong den loi giai.',
+    BFS: 'Tìm theo chiều rộng, đảm bảo ít nước đi nhất khi mỗi bước có cùng chi phí.',
+    DFS: 'Tìm theo chiều sâu, không đảm bảo đường đi ngắn nhất.',
+    UCS: 'Tìm theo chi phí đều, tối ưu khi mỗi hành động có chi phí 1.',
+    Greedy: 'Ưu tiên trạng thái có heuristic tốt nhất, nhanh nhưng không đảm bảo tối ưu.',
+    'A*': 'Kết hợp chi phí đã đi và heuristic để hướng đến lời giải.',
   }
 
-  return notes[algorithm] ?? 'Da tim thay loi giai.'
+  return notes[algorithm] ?? 'Đã tìm thấy lời giải.'
 }
 
 export function validatePuzzle(bottles) {
   if (bottles.length !== BOTTLE_COUNT) {
-    return `Bai toan phai co dung ${BOTTLE_COUNT} lo.`
+    return `Bài toán phải có đúng ${BOTTLE_COUNT} lọ.`
   }
 
   const counts = Object.fromEntries(PUZZLE_COLORS.map((color) => [color, 0]))
@@ -94,12 +94,12 @@ export function validatePuzzle(bottles) {
     const bottle = bottles[bottleIndex]
 
     if (bottle.length > CAPACITY) {
-      return `Lo ${bottleIndex + 1} vuot qua suc chua ${CAPACITY} lop.`
+      return `Lọ ${bottleIndex + 1} vượt quá sức chứa ${CAPACITY} lớp.`
     }
 
     for (const color of bottle) {
       if (!PUZZLE_COLORS.includes(color)) {
-        return `Lo ${bottleIndex + 1} co mau khong hop le.`
+        return `Lọ ${bottleIndex + 1} có màu không hợp lệ.`
       }
       counts[color] += 1
       totalLayers += 1
@@ -107,12 +107,12 @@ export function validatePuzzle(bottles) {
   }
 
   if (totalLayers !== PUZZLE_COLORS.length * CAPACITY) {
-    return `Bai toan phai co dung ${PUZZLE_COLORS.length * CAPACITY} lop mau.`
+    return `Bài toán phải có đúng ${PUZZLE_COLORS.length * CAPACITY} lớp màu.`
   }
 
   for (const color of PUZZLE_COLORS) {
     if (counts[color] !== CAPACITY) {
-      return `Mau ${COLOR_LABELS[color]} phai xuat hien dung ${CAPACITY} lan.`
+      return `Màu ${COLOR_LABELS[color]} phải xuất hiện đúng ${CAPACITY} lần.`
     }
   }
 

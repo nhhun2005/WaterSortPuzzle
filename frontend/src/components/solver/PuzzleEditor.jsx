@@ -18,29 +18,29 @@ function PuzzleEditor({ bottles, error, onChange }) {
     <div className="puzzle-editor">
       <div className="section-heading">
         <div>
-          <h2>Nhap bai cu the</h2>
-          <p>Moi cot la mot lo, o duoi la day lo va o tren la mieng lo.</p>
+          <h2>Nhập bài cụ thể</h2>
+          <p>Mỗi cột là một lọ, ô dưới là đáy lọ và ô trên là miệng lọ.</p>
         </div>
       </div>
 
       <div className="editor-grid">
         {Array.from({ length: BOTTLE_COUNT }, (_, bottleIndex) => (
           <div className="editor-bottle" key={bottleIndex}>
-            <span>Lo {bottleIndex + 1}</span>
+            <span>Lọ {bottleIndex + 1}</span>
             <div className="editor-cells">
               {Array.from({ length: CAPACITY }, (_, reverseIndex) => {
                 const layerIndex = CAPACITY - 1 - reverseIndex
                 const value = bottles[bottleIndex]?.[layerIndex] ?? EMPTY_VALUE
                 return (
                   <select
-                    aria-label={`Lo ${bottleIndex + 1}, lop ${layerIndex + 1}`}
+                    aria-label={`Lọ ${bottleIndex + 1}, lớp ${layerIndex + 1}`}
                     className="editor-cell"
                     data-color={value || undefined}
                     key={layerIndex}
                     onChange={(event) => setCell(bottleIndex, layerIndex, event.target.value)}
                     value={value}
                   >
-                    <option value={EMPTY_VALUE}>Trong</option>
+                    <option value={EMPTY_VALUE}>Trống</option>
                     {PUZZLE_COLORS.map((color) => (
                       <option key={color} value={color}>
                         {COLOR_LABELS[color]}

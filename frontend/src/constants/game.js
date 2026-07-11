@@ -5,12 +5,12 @@ export const BOTTLE_COUNT = 8
 export const PUZZLE_COLORS = ['red', 'green', 'blue', 'yellow', 'purple', 'cyan']
 
 export const COLOR_LABELS = {
-  red: 'Do',
-  green: 'Xanh la',
-  blue: 'Xanh duong',
-  yellow: 'Vang',
-  purple: 'Tim',
-  cyan: 'Xanh ngoc',
+  red: 'Đỏ',
+  green: 'Xanh lá',
+  blue: 'Xanh dương',
+  yellow: 'Vàng',
+  purple: 'Tím',
+  cyan: 'Xanh ngọc',
 }
 
 export const ALGORITHMS = ['BFS', 'DFS', 'UCS', 'Greedy', 'A*']
@@ -24,9 +24,9 @@ export const HEURISTICS = [
 ]
 
 export const HEURISTIC_OPTIONS = [
-  { value: 'Misplaced color blocks', label: 'So khoi mau sai vi tri' },
-  { value: 'Incomplete bottles', label: 'So lo chua hoan thanh' },
-  { value: 'Color transition count', label: 'So lan chuyen mau' },
+  { value: 'Misplaced color blocks', label: 'Số khối màu sai vị trí' },
+  { value: 'Incomplete bottles', label: 'Số lọ chưa hoàn thành' },
+  { value: 'Color transition count', label: 'Số lần chuyển màu' },
 ]
 
 export function algorithmUsesHeuristic(algorithm) {
