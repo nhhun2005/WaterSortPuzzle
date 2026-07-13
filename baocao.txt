@@ -1,0 +1,250 @@
+ BỘ GIÁO DỤC VÀ ĐÀO TẠO
+TRƯỜNG ĐẠI HỌC CẦN THƠ 
+TRƯỜNG CÔNG NGHỆ THÔNG TIN & TRUYỀN THÔNG 
+
+
+ 
+ 
+ 
+ 
+ĐỒ ÁN
+HỌC PHẦN
+NỀN TẢNG TRÍ TUỆ NHÂN TẠO 
+ 
+ 
+ 
+ 
+Đề tài 
+ 
+TRÒ CHƠI WATER SORT PUZZLE
+ 
+ 
+ 
+ Giảng viên hướng dẫn:
+TS. Lưu Tiến Đạo
+
+Nhóm sinh viên thực hiện: 
+1. Nguyễn Hà Huân - B2303869 
+2. Nguyễn Ngọc Phương Huỳnh - B2303872
+
+
+ 
+Cần Thơ, …/….
+ 
+NHẬN XÉT CỦA GIẢNG VIÊN
+ 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+	 	Cần Thơ, ngày     tháng     năm 
+	 	(Ký và ghi rõ họ tên) 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	 
+ 
+ 
+ 
+
+MỤC LỤC 
+ 
+ 
+ 
+PHÂN CÔNG CÔNG VIỆC
+
+
+
+PHẦN NỘI DUNG
+       
+Mô tả bài toán
+Giới thiệu bài toán
+- Trò chơi Water Sort Puzzle được phục dựng lại dựa trên bản gốc Water Sort Puzzle: Color Sort[1] với lối chơi đơn giản là tìm cách đổ các chất lỏng có màu sắc giữa các lọ thủy tinh sao cho mỗi lọ hoặc là rỗng hoặc chỉ chứa một màu duy nhất.
+Phạm vi đồ án
+- Trong phạm vi đồ án này, trò chơi Water Sort Puzzle sẽ tập trung về việc áp dụng các thuật toán đã được học trong học phần Nền tảng Trí tuệ nhân tạo - CT223H để tìm cách giải tối ưu. Đưa ra ưu điểm và nhược điểm của từng thuật toán được áp dụng và hàm Heuristic đối với các thuật toán tìm kiếm có thông tin.
+- Đồ án chỉ tập trung vào giải thuật, màn chơi được cài đặt cố định gồm số lượng màu sắc là 3 (4 vạch chất lỏng mỗi loại màu sắc) và số lượng lọ thủy tinh là 5. 
+Phân tích bài toán
+- Vì các thành phần của bài toán được thay đổi dựa trên cách sắp xếp thứ tự, báo cáo sẽ nhất sử dụng bài toán có trạng thái như sau để phân tích:
+
+Hình 2.1. Bài toán cụ thể được lựa chọn.
+
+Trạng thái đầu
+- Trong trò chơi Water Sort Puzzle có quy tắc là chỉ có thể đổ các vạch chất lỏng từ trên đỉnh trước rồi mới đổ các vạch chất lỏng ở phía dưới. Cấu trúc dữ liệu ngăn xếp (Stack) sẽ là lựa chọn phù hợp để giải quyết bài toán này. 
+- Trạng thái ban đầu của trò chơi được biểu diễn dưới dạng như sau:
++ Trạng thái là một danh sách chứa 5 ngăn xếp tượng trưng cho 5 lọ thủy tinh.
++ Mỗi ngăn xếp chứa các giá trị tượng trưng cho các vạch chất lỏng bên trong lọ thủy tinh.
++ Lọ 1: {đỏ}.
++ Lọ 2: {xanh lá, xanh lá, xanh dương, đỏ}
++ Lọ 3: {xanh dương, xanh dương, đỏ}
++ Lọ 4: {xanh lá, xanh lá, xanh dương, đỏ}
++ Lọ 5: {} ( Ngăn xếp rỗng )
+
+Trạng thái kết thúc
+- Trò chơi chỉ yêu cầu các vạch chất lỏng cùng màu, không quy định lọ thủy tinh số mấy chứa màu nào. Vì vậy trạng thái kết thúc của bài toán chỉ cần đạt điều kiện như sau:
++ Mỗi lọ thủy tinh hoặc là ngăn xếp rỗng hoặc là chứa đúng 4 phần tử mang cùng giá trị.
+- Ví dụ trạng thái kết thúc hợp lệ:
++ Lọ 1: {đỏ, đỏ, đỏ, đỏ}.
++ Lọ 2: {} ( Ngăn xếp rỗng )
++ Lọ 3: {xanh dương, xanh dương, xanh dương, xanh dương}
++ Lọ 4: {xanh lá, xanh lá, xanh lá, xanh lá}
++ Lọ 5: {} ( Ngăn xếp rỗng )
+
+Các hành động
+- Bài toán bao gồm một loại hành động là đổ chất lỏng từ lọ thủy tinh A sang lọ thủy tinh B (A!=B).
+- Điều kiện để hành động đổ từ lọ thủy tinh A sang lọ B thủy tinh có thể thực hiện:
+	+ Lọ A phải có ít nhất 1 vạch chất lỏng.
++ Vạch chất lỏng ở đỉnh ngăn xếp của lọ thủy tinh A phải cùng màu với vạch chất lỏng ở đỉnh ngăn xếp của lọ thủy tinh B ( hoặc lọ thủy tinh B rỗng ).
++ Lọ B phải có ít hơn 4 vạch chất lỏng.
++ Chỉ được đổ liên tiếp các vạch chất lỏng có cùng màu nằm trên đỉnh của lọ thủy tinh A sang cho lọ thủy tinh B.
++Khi lọ thủy tinh có 4 vạch chất lỏng có màu giống nhau thì lọ thủy tinh đó sẽ không được sử dụng để đổ chất lỏng nữa
+Cơ sở lý thuyết 
+- Trò chơi Water Sort Puzzle là trò chơi thuộc dạng tìm kiếm đường đi đến trạng thái đích. Trong phạm vi báo cáo này, trò chơi sẽ được giải theo 2 nhóm giải thuật là tìm kiếm mù bao gồm BFS, DFS, UCS và tìm kiếm có thông tin bao gồm Greedy và A*. 
+Giải thuật Duyệt theo chiều rộng (BFS)
+- Ý tưởng: BFS duyệt cây tìm kiếm theo từng tầng (mức độ sâu). Nó áp dụng các hành động hợp lệ lên tất cả các trạng thái ở cùng một bậc rồi mới sang bậc kế tiếp, sử dụng một hàng đợi. Nhờ vậy, lần đầu tiên BFS chạm tới đích cũng chính là đường đi có số bước ít nhất.
+
+- Ưu điểm của giải thuật:
+  + Luôn tìm ra lời giải ngắn nhất (ít bước đi nhất) trong bài toán này, vì mỗi bước có chi phí bằng nhau và BFS duyệt tuần tự theo từng tầng.
+  + Nếu bài toán có lời giải thì BFS chắc chắn tìm ra.
+- Nhược điểm của giải thuật:
+  + Tốn rất nhiều bộ nhớ cho việc sinh và lưu trữ các trạng thái khả thi: hàng đợi phình to rất nhanh vì phải lưu toàn bộ các nút của một tầng trước khi mở rộng sang tầng sau.
+  + Chậm khi lời giải nằm sâu (cần nhiều bước) hoặc khi có nhiều màu, nhiều lọ, sẽ gây bùng nổ không gian trạng thái.
+  + Chỉ đảm bảo tối ưu khi mọi hành động có chi phí như nhau; nếu mỗi hành động đổ nước có chi phí khác nhau thì BFS không còn đảm bảo tìm được đường đi rẻ nhất.
+- Khi nào phù hợp: lời giải nông (ít bước), số lọ và số màu nhỏ, và ta cần chắc chắn có lời giải ngắn nhất.
+- Khi nào yếu: bài toán lớn/sâu khiến số trạng thái quá nhiều, dẫn đến hết bộ nhớ và chạy chậm.
+Giải thuật Duyệt theo chiều sâu (DFS)
+- Ý tưởng: DFS áp dụng các hành động hợp lệ lên một trạng thái và đi sâu hết mức có thể theo một nhánh cho đến khi gặp trạng thái đích hoặc không thể áp dụng hành động được nữa, rồi mới quay lui. Giải thuật dùng một ngăn xếp.
+- Ưu điểm của giải thuật:
+  + Tốn rất ít bộ nhớ: chỉ cần lưu một nhánh đang đi theo chiều sâu, chứ không phải toàn bộ một tầng như BFS.
+  + Thường tìm thấy một lời giải rất nhanh khi lời giải nằm sâu trên đúng nhánh mà DFS đi trúng.
+- Nhược điểm của giải thuật:
+  + Không tối ưu: nếu lựa chọn sai nhánh ngay từ đầu thì số lần áp dụng hành động vẫn rất nhiều, và lời giải tìm được thường dài (nhiều bước thừa), hiếm khi là ngắn nhất.
+  + Có thể "lạc" sâu vào một nhánh sai và tốn công vô ích, nên cần giới hạn độ sâu để tránh chạy mãi không dừng.
+  + Trong trường hợp xấu, DFS có thể chậm hơn BFS rất nhiều.
+- Khi nào phù hợp: chỉ cần tìm được một lời giải (không quan tâm ngắn hay dài) và bộ nhớ hạn chế; lời giải thường nằm sâu.
+- Khi nào yếu: cần lời giải ngắn nhất, hoặc cây tìm kiếm có nhiều nhánh sai khiến DFS đi lệch hướng.
+Giải thuật Tham ăn (Greedy)
+- Ý tưởng: Greedy luôn mở rộng trạng thái trông "gần đích nhất" tại thời điểm lựa chọn, chỉ dựa hoàn toàn vào giá trị heuristic h(n) mà bỏ qua chi phí đã đi g(n). Nó dùng hàng đợi ưu tiên sắp theo h(n) nhỏ nhất.
+
+- Ưu điểm của giải thuật:
+  + Rất nhanh khi heuristic tốt: luôn lao thẳng về phía trông gần đích nhất, nên thường chạm đích chỉ sau ít bước mở rộng.
+  + Trong nhiều trường hợp tốn ít bộ nhớ và ít thời gian hơn BFS/UCS/A*.
+- Nhược điểm của giải thuật:
+  + Không tối ưu: vì chỉ nhìn h(n) mà bỏ qua chi phí đã đi g(n), lời giải tìm được có thể dài hơn nhiều so với đường đi ngắn nhất.
+  + Dễ bị "đánh lừa": nếu heuristic ước lượng sai, giải thuật có thể lao vào ngõ cụt và trở nên chậm.
+  + Chất lượng phụ thuộc hoàn toàn vào hàm heuristic; heuristic kém thì kết quả kém.
+- Khi nào phù hợp: heuristic sát thực tế và ta chỉ cần một lời giải nhanh (không bắt buộc ngắn nhất).
+- Khi nào yếu: heuristic kém hoặc gây hiểu lầm, hoặc khi ta cần lời giải ngắn nhất.
+Giải thuật Tìm kiếm chi phí đồng nhất (UCS)
+- Ý tưởng: UCS luôn mở rộng trạng thái có tổng chi phí đường đi g(n) thấp nhất, sử dụng hàng đợi ưu tiên sắp theo chi phí. Giải thuật duy trì bảng chi phí tốt nhất tới mỗi trạng thái: nếu tìm được đường rẻ hơn tới một trạng thái đã gặp, nó cập nhật lại. Đối với trò chơi Water Sort Puzzle, chi phí mỗi bước đều bằng nhau, vì thế UCS trong báo cáo này hoạt động giống BFS.
+- Ưu điểm của giải thuật:
+  + Luôn tìm ra lời giải có tổng chi phí thấp nhất (tối ưu), kể cả khi các bước đi có chi phí khác nhau.
+  + Nếu bài toán có lời giải thì chắc chắn tìm ra.
+  + Tổng quát hơn BFS: vẫn đúng đắn khi chi phí mỗi bước thay đổi trong tương lai.
+- Nhược điểm của giải thuật:
+  + Khi mỗi bước có chi phí bằng nhau (đúng như bài toán này), UCS thực chất chỉ là BFS "đội lốt" nhưng lại CHẬM HƠN, vì phải duy trì hàng đợi ưu tiên thay vì hàng đợi FIFO đơn giản.
+  + Tốn bộ nhớ tương đương BFS: phải lưu rất nhiều trạng thái.
+  + Không dùng heuristic nên không biết hướng về đích, dẫn đến mở rộng thừa nhiều nút không cần thiết.
+
+- Khi nào phù hợp: các bước đi có chi phí khác nhau và ta cần lời giải rẻ nhất.
+- Khi nào yếu: mỗi bước có chi phí như nhau (như bài toán này) thì nên dùng BFS cho nhanh; hoặc bài toán lớn khiến tốn nhiều bộ nhớ và thời gian.
+Giải thuật A*
+- Ý tưởng: A* luôn mở rộng trạng thái có giá trị f(n) = g(n) + h(n) nhỏ nhất, trong đó g(n) là chi phí đã đi từ trạng thái đầu tới n, còn h(n) là ước lượng chi phí còn lại tới đích. Nhờ cân bằng giữa "chi phí đã bỏ ra" và "ước lượng còn lại", A* vừa hướng về đích như Greedy vừa giữ được tính tối ưu như UCS. Giải thuật cũng dùng hàng đợi ưu tiên và bảng chi phí tốt nhất để cập nhật lại khi tìm được đường rẻ hơn.
+- Ưu điểm của giải thuật:
+  + Vừa nhanh vừa tối ưu: kết hợp chi phí đã đi g(n) và ước lượng còn lại h(n), nên tìm được lời giải ngắn nhất trong khi mở rộng ít node hơn BFS/UCS.
+  + Thường là lựa chọn cân bằng tốt nhất giữa tốc độ và chất lượng lời giải.
+- Nhược điểm của giải thuật:
+  + Sẽ chậm lại nếu heuristic yếu, thậm chí khi giá trị heuristic là không thì khi đó A* thoái hóa thành UCS.
+- Khi nào phù hợp: cần lời giải ngắn nhất mà vẫn muốn nhanh, và có sẵn hàm heuristic tốt.
+- Khi nào yếu: heuristic quá kém khiến A* chậm như UCS.
+Các hàm Heuristic
+- Hàm Heuristic dựa trên số vạch màu sai vị trí:
++ Ý tưởng của hàm heuristic này là đếm số vạch màu khác nhau của mỗi lọ và số lọ chưa hoàn thành. Một lọ có càng nhiều vạch màu thì lọ đó càng lộn xộn, và càng nhiều lọ chưa hoàn thành thì nó càng xa trạng thái kết thúc.
++ Với mỗi lần diễn ra sự thay đổi màu sắc trong lọ, hàm heuristic sẽ được cộng một điểm. Nếu lọ thủy tinh hoàn thiện cũng sẽ được cộng một điểm.
+- Hàm Heuristic dựa trên số lọ thủy tinh chưa hoàn thiện:
++ Ý tưởng của hàm heuristic này là đếm số lọ thủy tinh chưa hoàn thiện. Một trạng thái có càng nhiều lọ thủy tinh chưa hoàn thiện thì càng xa với trạng thái kết thúc.
++ Với mỗi lọ thủy tinh chưa hoàn thiện thì hàm heuristic sẽ được cộng một điểm.
+- Hàm Heuristic dựa trên số lần chuyển màu:
++ Ý tưởng của hàm heuristic này là đếm số vạch màu khác nhau của mỗi lọ. Một lọ có càng nhiều vạch màu thì lọ đó càng lộn xộn. 
++ Với mỗi lần diễn ra sự thay đổi màu sắc trong lọ, hàm heuristic sẽ được cộng một điểm.
+- Mặc dù có thể thấy ý tưởng của hai hàm heuristic cuối giống như được tách ra từ hàm heuristic đầu tiên, nhưng chúng được xây dựng dựa trên các góc nhìn khác nhau về mức độ gần với trạng thái kết thúc:
++ Hàm heuristic dựa trên số lọ thủy tinh chưa hoàn thiện chỉ đánh giá trạng thái dựa trên mức độ hoàn thành của từng lọ. Hàm này có cách tính đơn giản và chi phí tính toán thấp, tuy nhiên lượng thông tin cung cấp cho thuật toán tìm kiếm còn hạn chế vì không xem xét sự phân bố màu sắc bên trong từng lọ.
+- Hàm heuristic dựa trên số lần chuyển màu đánh giá mức độ phân mảnh của các vạch chất lỏng trong toàn bộ trạng thái. Hàm này cung cấp thêm thông tin về sự sắp xếp của các màu sắc, nhưng không trực tiếp xem xét một lọ đã hoàn thành hay chưa.
+- Hàm heuristic dựa trên số vạch màu sai vị trí kết hợp cả hai yếu tố: mức độ phân mảnh màu sắc và trạng thái hoàn thành của từng lọ. Việc bổ sung thêm thông tin có thể giúp thuật toán định hướng tìm kiếm tốt hơn trong một số trường hợp, nhưng cũng làm tăng độ phức tạp khi tính toán và cần được đánh giá thông qua thực nghiệm.
+Do đó, không có hàm heuristic nào luôn tốt nhất trong mọi trường hợp. Chúng ta sẽ chọn chúng dựa trên tiêu chí tốc độ, số trạng thái được sinh ra hoặc cân bằng cả 2 yếu tố.
+Thiết kế và cài đặt
+Công nghệ và kiến trúc
+- Sử dụng ReactJS để xây dựng giao diện cho bài toán một cách nhanh chóng.
+- Toàn bộ phần tính toán (sinh trạng thái, kiểm tra luật đổ chất lỏng, các giải thuật tìm kiếm và các hàm heuristic) được cài đặt bằng JavaScript thuần, không phụ thuộc thư viện tính toán bên ngoài. Nhờ vậy chương trình gọn nhẹ, dễ triển khai và dễ kiểm soát logic thuật toán.
+Biểu diễn dữ liệu 
+- Trong trò chơi Water Sort Puzzle có quy tắc là chỉ có thể đổ các vạch chất lỏng từ trên đỉnh trước rồi mới đổ các vạch chất lỏng ở phía dưới. Cấu trúc dữ liệu ngăn xếp (Stack) sẽ là lựa chọn phù hợp để giải quyết bài toán này.
+- Trạng thái của trò chơi được biểu diễn dưới dạng như sau:
++ Trạng thái là một danh sách chứa 5 ngăn xếp tượng trưng cho 5 lọ thủy tinh.
++ Mỗi ngăn xếp chứa các giá trị tượng trưng cho các vạch chất lỏng bên trong lọ thủy tinh, xếp theo thứ tự từ đáy lọ lên tới miệng lọ.
++ Phần tử ở đỉnh ngăn xếp chính là vạch chất lỏng ở miệng lọ, cũng là vạch sẽ bị đổ ra đầu tiên.
+- Với cách biểu diễn này, một hành động đổ chính là lấy cụm vạch màu ở đỉnh ngăn xếp nguồn và đẩy sang ngăn xếp đích khi hợp lệ, phản ánh trực tiếp thao tác trong trò chơi thực tế.
+- Ngoài ra, để tránh xét lại các trạng thái đã gặp, mỗi trạng thái được chuyển thành một chuỗi khóa duy nhất theo đúng thứ tự các lọ. Vì vậy, hai trạng thái có cùng nội dung nhưng khác vị trí (thứ tự) các lọ sẽ được xem là hai trạng thái khác nhau.
+Cài đặt bộ giải trò chơi 
+Chương trình xây dựng một hàm điều phối chung để lựa chọn thuật toán theo yêu cầu của người dùng.
+BFS sử dụng hàng đợi.
+DFS sử dụng ngăn xếp và giới hạn độ sâu tối đa để tránh đi quá sâu.
+UCS sử dụng hàng đợi ưu tiên theo chi phí g(n).
+Greedy sử dụng hàng đợi ưu tiên theo giá trị h(n).
+A* sử dụng hàng đợi ưu tiên theo: f(n)=g(n)+h(n)
+Sau khi tìm thấy trạng thái đích, chương trình lần theo các nút cha để tạo danh sách hành động theo đúng thứ tự từ trạng thái đầu đến trạng thái kết thúc.
+Kết quả của mỗi lần chạy gồm:
+Có tìm thấy lời giải hay không.
+Danh sách các hành động.
+Số bước của lời giải.
+Số trạng thái đã sinh.
+Số trạng thái đã mở rộng.
+ Thời gian thực hiện.
+Dữ liệu dùng để minh họa cây tìm kiếm.
+
+
+Thiết kế giao diện
+Giao diện chương trình gồm hai khu vực chính.
+Khu vực điều khiển cho phép người dùng:
+Nhập trạng thái cụ thể của các lọ.
+Tạo bài toán ngẫu nhiên.
+Lựa chọn thuật toán.
+Lựa chọn hàm heuristic đối với Greedy và A*.
+Bắt đầu quá trình tìm lời giải.
+Khu vực kết quả hiển thị:
+Trạng thái hiện tại của các lọ.
+Kết quả tìm kiếm.
+Số bước của lời giải.
+Số trạng thái đã sinh.
+Số trạng thái đã mở rộng.
+Thời gian thực hiện.
+Cây tìm kiếm của thuật toán.
+Cây tìm kiếm hiển thị mối quan hệ giữa các trạng thái cha và con. Với các thuật toán có sử dụng heuristic, mỗi nút còn hiển thị giá trị (h(n)); riêng A* hiển thị thêm giá trị (f(n)).
+Người dùng có thể chuyển qua từng bước trên cây tìm kiếm để quan sát trạng thái các lọ tương ứng.
+
+
+Hình 4.1. Giao diện được thiết kế.
+
+
+
+
+PHẦN KẾT LUẬN 
+   1. Kết quả đạt được 
+- Đối với nhóm sinh viên thực hiện:
++ Hiểu hơn về việc áp dụng các thuật toán trong học phần Nền tảng trí tuệ nhân tạo vào các bài toán, trò chơi. Tìm được ưu điểm và nhược điểm của từng thực toán, khi nào nên áp dụng và khi nào nên lựa chọn thuật toán khác.
+- Đối với kết quả triển khai:
++ Triển khai được một ứng dụng web để minh họa cách thuật toán hoạt động một cách trực quan dễ dàng quan sát hơn.
+   2. Hướng phát triển 
+- Ngoài phạm vi đã xác định ban đầu, ứng dụng có thể phát triển thêm thành cho phép giải các bài toán phức tạp với số lọ và số màu sắc nhiều hơn. 
+- Có thể tìm kiếm các hàm heuristic tối ưu hơn 3 hàm heuristic đã được cài đặt.
+
+ 	 
+
+TÀI LIỆU THAM KHẢO 
+[1]. HDuo Fun Games. Water Sort Puzzle: Color Sort. Truy cập ngày 10/07/2026, từ https://play.google.com/store/apps/details?id=water.sorting.games.liquid.color.sort.puzzle
+[2].  	
+ 
