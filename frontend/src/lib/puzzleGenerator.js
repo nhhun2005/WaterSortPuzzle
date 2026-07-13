@@ -56,8 +56,14 @@ function applyReverseShuffleMove(bottles) {
         const sourceWillBeEmpty = sourceBottle.length === amount
         const sourceWillKeepSameTop = amount < maxAmount
         const canReverseExactly = sourceWillBeEmpty || sourceWillKeepSameTop
+        const reverseSourceWouldBeComplete =
+          bottles[target].length === 0 && amount === CAPACITY
 
-        if (canReverseExactly && bottles[target].length + amount <= CAPACITY) {
+        if (
+          canReverseExactly &&
+          !reverseSourceWouldBeComplete &&
+          bottles[target].length + amount <= CAPACITY
+        ) {
           moves.push({ source, target, color, amount })
         }
       }

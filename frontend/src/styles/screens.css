@@ -483,6 +483,29 @@
   font-weight: 700;
 }
 
+.tree-selected-action {
+  min-height: 54px;
+  padding: 9px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  border: 1px solid rgba(30, 76, 130, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.tree-selected-action span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.tree-selected-action strong {
+  color: var(--ink-strong);
+  font-size: 14px;
+}
+
 .tree-legend {
   display: flex;
   flex-wrap: wrap;
@@ -568,6 +591,15 @@
   background: #ffffff;
   box-shadow: 0 4px 10px rgba(37, 75, 126, 0.08);
   box-sizing: border-box;
+  cursor: pointer;
+}
+
+.tree-node:hover,
+.tree-node:focus-visible {
+  border-color: var(--blue);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(54, 132, 255, 0.24);
+  z-index: 3;
 }
 
 .tree-node strong {

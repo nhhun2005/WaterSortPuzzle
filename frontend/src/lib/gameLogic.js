@@ -1,7 +1,7 @@
 import { CAPACITY } from '../constants/game'
 
-// Cac ham thao tac tren trang thai bai toan, dung chung cho bo giai va sinh de.
-// Moi lo la mot ngan xep mau xep tu day (index 0) len mieng (phan tu cuoi).
+// Các hàm thao tác trên trạng thái bài toán, dùng chung cho bộ giải và sinh đề.
+// Mỗi lọ là một ngăn xếp màu xếp từ đáy (index 0) lên miệng (phần tử cuối).
 
 export function cloneBottles(bottles) {
   return bottles.map((bottle) => [...bottle])
@@ -11,7 +11,7 @@ export function topColor(bottle) {
   return bottle[bottle.length - 1]
 }
 
-// Dem so vach mau cung mau lien tiep nam tren dinh lo.
+// Đếm số vạch màu cùng màu liên tiếp nằm trên đỉnh lọ.
 export function countTopRun(bottle) {
   const color = topColor(bottle)
   let count = 0
@@ -26,7 +26,7 @@ export function countTopRun(bottle) {
   return count
 }
 
-// Do chat long tu lo nguon sang lo dich neu hop le, tra ve trang thai moi va hanh dong.
+// Đổ chất lỏng từ lọ nguồn sang lọ đích nếu hợp lệ, trả về trạng thái mới và hành động.
 export function pourBetween(bottles, sourceIndex, targetIndex) {
   if (sourceIndex === targetIndex) {
     return null
@@ -36,6 +36,10 @@ export function pourBetween(bottles, sourceIndex, targetIndex) {
   const target = bottles[targetIndex]
 
   if (!source?.length || !target || target.length >= CAPACITY) {
+    return null
+  }
+
+  if (isCompleteBottle(source)) {
     return null
   }
 
@@ -65,7 +69,7 @@ export function pourBetween(bottles, sourceIndex, targetIndex) {
   }
 }
 
-// Trang thai ket thuc: moi lo hoac rong hoac chua dung 4 vach cung mau.
+// Trạng thái kết thúc: mỗi lọ hoặc rỗng hoặc chứa đúng 4 vạch cùng màu.
 export function isWinState(bottles) {
   return bottles.every((bottle) => bottle.length === 0 || isCompleteBottle(bottle))
 }

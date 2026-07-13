@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { COLOR_LABELS } from '../../constants/game'
 
 
 const NODE_WIDTH = 132
@@ -8,20 +9,21 @@ const V_GAP = 54
 const PADDING = 24
 
 /**
- * Ve cay tim kiem theo dang so do cay tu tren xuong: node goc o tren cung,
- * cac node con toa xuong duoi va duoc noi voi node cha bang duong cong.
+ * Vẽ cây tìm kiếm theo dạng sơ đồ cây từ trên xuống: node gốc ở trên cùng,
+ * các node con tỏa xuống dưới và được nối với node cha bằng đường cong.
  *
- * Giao dien xem theo tung buoc: buoc 1 la goc, buoc 2, 3, 4... la moi lan
- * thuat toan mo rong / sinh them mot trang thai. Nguoi dung co the:
- *  - Lui/tien tung buoc bang nut ← →.
- *  - Nhap thang so buoc muon toi.
- *  - Nhay ve buoc dau hoac buoc cuoi.
- * Moi khi doi buoc, canvas se focus vao node vua them va bao cho man hinh
- * cha biet trang thai bai toan tuong ung (qua onStepChange).
+ * Giao diện xem theo từng bước: bước 1 là gốc, bước 2, 3, 4... là mỗi lần
+ * thuật toán mở rộng / sinh thêm một trạng thái. Người dùng có thể:
+ *  - Lùi/tiến từng bước bằng nút ← →.
+ *  - Nhập thẳng số bước muốn tới.
+ *  - Nhảy về bước đầu hoặc bước cuối.
+ *  - Click trực tiếp một node/hành động trên cây để xem trạng thái tương ứng.
+ * Mỗi khi đổi bước, canvas sẽ focus vào node vừa chọn và báo cho màn hình
+ * cha biết trạng thái bài toán tương ứng (qua onStepChange).
  */
 function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepChange }) {
-  // Layout duoc dung mot lan cho toan bo cay de vi tri node khong bi nhay
-  // khi chuyen buoc. Viec an/hien chi thay doi lop hien thi.
+  // Layout được dùng một lần cho toàn bộ cây để vị trí node không bị nhảy
+  // khi chuyển bước. Việc ẩn/hiện chỉ thay đổi lớp hiển thị.
   const layout = useMemo(() => buildLayout(nodes), [nodes])
 
   const totalSteps = nodes.length
@@ -32,12 +34,12 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
   const dragState = useRef(null)
   const [isDragging, setIsDragging] = useState(false)
 
-  // Khi cay thay doi (giai bai moi), quay ve buoc 1.
+  // Khi cây thay đổi (giải bài mới), quay về bước 1.
   useEffect(() => {
     setCurrentStep(1)
   }, [nodes])
 
-  // Node dang duoc xem theo buoc hien tai.
+  // Node đang được xem theo bước hiện tại.
   const currentNode = useMemo(() => {
     if (!layout) {
       return null
@@ -45,14 +47,14 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
     return layout.positioned.find((node) => node.id === currentStep) ?? null
   }, [layout, currentStep])
 
-  // Bao cho man hinh cha biet trang thai bai toan cua buoc hien tai.
+  // Báo cho màn hình cha biết trạng thái bài toán của bước hiện tại.
   useEffect(() => {
     if (onStepChange) {
       onStepChange(currentNode?.bottles ?? null)
     }
   }, [currentNode, onStepChange])
 
-  // Dieu huong canvas den node dang xem.
+  // Điều hướng canvas đến node đang xem.
   useEffect(() => {
     const scroller = scrollRef.current
     if (!scroller || !currentNode) {
@@ -86,8 +88,12 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
     setCurrentStep(clamp(parsed, 1, totalSteps))
   }
 
+  function goToStep(step) {
+    setCurrentStep(clamp(step, 1, totalSteps))
+  }
+
   function handlePointerDown(event) {
-    // Chi keo bang chuot trai hoac cham, khong chan tuong tac khac.
+    // Chỉ kéo bằng chuột trái hoặc chạm, không chặn tương tác khác.
     if (event.button !== 0) {
       return
     }
@@ -140,7 +146,7 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
 
   const { positioned, edges, width, height, byId } = layout
 
-  // Node hien thi la cac node tu goc den buoc hien tai.
+  // Node hiển thị là các node từ gốc đến bước hiện tại.
   function isVisible(node) {
     return Boolean(node) && node.id <= currentStep
   }
@@ -149,6 +155,7 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
     return isVisible(byId.get(edge.fromId)) && isVisible(byId.get(edge.toId))
   }
 
+  const selectedAction = describeAction(currentNode)
 
   return (
     <div className="search-tree">
@@ -215,6 +222,10 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
             Đang xem bước {currentStep}/{totalSteps}
           </span>
         </div>
+        <div className="tree-selected-action">
+          <span>Hành động đang chọn</span>
+          <strong>{selectedAction}</strong>
+        </div>
       </div>
 
 
@@ -270,14 +281,25 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
 
             return (
               <div
+                aria-label={`Xem ${label}`}
                 className={className}
                 key={node.id}
+                onClick={() => goToStep(node.id)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault()
+                    goToStep(node.id)
+                  }
+                }}
+                onPointerDown={(event) => event.stopPropagation()}
+                role="button"
                 style={{
                   left: node.px,
                   top: node.py,
                   width: NODE_WIDTH,
                   height: NODE_HEIGHT,
                 }}
+                tabIndex={0}
               >
                 <strong>{label}</strong>
                 <div className="tree-node-metrics">
@@ -295,8 +317,8 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
 }
 
 /**
- * Tinh toa do cho tung node bang thuat toan bo tri cay don gian:
- * la duoc xep tuan tu theo truc ngang, node cha duoc can giua cac con.
+ * Tính tọa độ cho từng node bằng thuật toán bố trí cây đơn giản:
+ * lá được xếp tuần tự theo trục ngang, node cha được căn giữa các con.
  */
 function buildLayout(nodes) {
   if (nodes.length === 0) {
@@ -371,6 +393,19 @@ function buildLayout(nodes) {
   const height = PADDING * 2 + (maxDepth + 1) * (NODE_HEIGHT + V_GAP)
 
   return { positioned, edges, width, height, byId }
+}
+
+function describeAction(node) {
+  if (!node) {
+    return 'Chưa có node được chọn'
+  }
+
+  if (!node.move) {
+    return 'Gốc - trạng thái ban đầu'
+  }
+
+  const color = COLOR_LABELS[node.move.color] ?? node.move.color
+  return `Đổ ${node.move.amount} vạch ${color.toLowerCase()} từ lọ ${node.move.from} sang lọ ${node.move.to}`
 }
 
 export default SearchTree
