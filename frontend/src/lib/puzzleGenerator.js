@@ -1,17 +1,17 @@
-import { CAPACITY, getDifficultyConfig } from '../constants/game'
+import { BOTTLE_COUNT, CAPACITY, PUZZLE_COLORS } from '../constants/game'
 import { cloneBottles, countTopRun, isWinState, topColor } from './gameLogic'
 
-export function createSolvedPuzzle(difficultyId) {
-  const { colors, bottleCount } = getDifficultyConfig(difficultyId)
-  const filled = colors.map((color) => Array(CAPACITY).fill(color))
-  const emptyCount = bottleCount - filled.length
+// Tao trang thai da giai xong: moi mau day mot lo, cac lo con lai de rong.
+export function createSolvedPuzzle() {
+  const filled = PUZZLE_COLORS.map((color) => Array(CAPACITY).fill(color))
+  const emptyCount = BOTTLE_COUNT - filled.length
   return [...filled, ...Array.from({ length: emptyCount }, () => [])]
 }
 
-export function generateRandomPuzzle({ difficultyId, minMoves = 40, maxMoves = 80 } = {}) {
+export function generateRandomPuzzle({ minMoves = 40, maxMoves = 80 } = {}) {
   for (let attempt = 0; attempt < 50; attempt += 1) {
     const shuffleMoves = randomInt(minMoves, maxMoves)
-    let current = createSolvedPuzzle(difficultyId)
+    let current = createSolvedPuzzle()
     let appliedMoves = 0
 
     for (let step = 0; step < shuffleMoves; step += 1) {
@@ -29,7 +29,7 @@ export function generateRandomPuzzle({ difficultyId, minMoves = 40, maxMoves = 8
     }
   }
 
-  return createSolvedPuzzle(difficultyId)
+  return createSolvedPuzzle()
 }
 
 function applyReverseShuffleMove(bottles) {

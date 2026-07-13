@@ -1,12 +1,10 @@
-import { CAPACITY, COLOR_LABELS, getDifficultyConfig } from '../../constants/game'
+import { BOTTLE_COUNT, CAPACITY, COLOR_LABELS, PUZZLE_COLORS } from '../../constants/game'
 
 const EMPTY_VALUE = ''
 
-function PuzzleEditor({ bottles, difficulty, error, onChange, showHeading = true }) {
-  const { bottleCount, colors } = getDifficultyConfig(difficulty)
-
+function PuzzleEditor({ bottles, error, onChange, showHeading = true }) {
   function setCell(bottleIndex, layerIndex, value) {
-    const next = Array.from({ length: bottleCount }, (_, index) => [
+    const next = Array.from({ length: BOTTLE_COUNT }, (_, index) => [
       ...(bottles[index] ?? []),
     ])
 
@@ -28,7 +26,7 @@ function PuzzleEditor({ bottles, difficulty, error, onChange, showHeading = true
       )}
 
       <div className="editor-grid">
-        {Array.from({ length: bottleCount }, (_, bottleIndex) => (
+        {Array.from({ length: BOTTLE_COUNT }, (_, bottleIndex) => (
           <div className="editor-bottle" key={bottleIndex}>
             <span>Lọ {bottleIndex + 1}</span>
             <div className="editor-cells">
@@ -45,7 +43,7 @@ function PuzzleEditor({ bottles, difficulty, error, onChange, showHeading = true
                     value={value}
                   >
                     <option value={EMPTY_VALUE}>Trống</option>
-                    {colors.map((color) => (
+                    {PUZZLE_COLORS.map((color) => (
                       <option key={color} value={color}>
                         {COLOR_LABELS[color]}
                       </option>

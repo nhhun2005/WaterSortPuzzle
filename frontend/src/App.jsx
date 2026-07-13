@@ -7,7 +7,6 @@ function App() {
   return (
     <SolverScreen
       algorithm={solver.algorithm}
-      difficulty={solver.difficulty}
       onPuzzleChange={solver.clearResult}
       heuristic={solver.heuristic}
       onAlgorithmChange={solver.setAlgorithm}

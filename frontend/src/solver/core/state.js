@@ -10,17 +10,14 @@ import { isWinState, pourBetween } from '../../lib/gameLogic'
  */
 
 /**
- * Serialize a state into a canonical string key used for the visited set.
+ * Serialize a state into a string key used for the visited set.
  *
- * Bottles are sorted before joining so that two states that only differ by
- * the order of their bottles are treated as identical. This symmetry
- * reduction is safe (any goal reachable from one arrangement is reachable
- * from an equivalent one) and dramatically shrinks the search space.
+ * Bottles are joined in their given order, so two states that differ only by
+ * the position (index) of their bottles are treated as DIFFERENT states.
  */
 export function serializeState(bottles) {
   return bottles
     .map((bottle) => bottle.join(','))
-    .sort()
     .join('|')
 }
 

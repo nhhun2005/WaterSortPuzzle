@@ -1,18 +1,17 @@
 import { useState } from 'react'
 import {
+  BOTTLE_COUNT,
   CAPACITY,
   COLOR_LABELS,
-  DEFAULT_DIFFICULTY,
   HEURISTICS,
+  PUZZLE_COLORS,
   algorithmUsesHeuristic,
-  getDifficultyConfig,
 } from '../constants/game'
 import { solve } from '../solver'
 
 export function useSolver() {
   const [algorithm, setAlgorithm] = useState('BFS')
   const [heuristic, setHeuristic] = useState(HEURISTICS[0])
-  const [difficulty, setDifficulty] = useState(DEFAULT_DIFFICULTY)
   const [solverResult, setSolverResult] = useState(null)
   const [validationError, setValidationError] = useState('')
 
@@ -24,7 +23,7 @@ export function useSolver() {
   }
 
   function findSolution(bottles) {
-    const error = validatePuzzle(bottles, difficulty)
+    const error = validatePuzzle(bottles)
     setValidationError(error)
 
     if (error) {
@@ -57,11 +56,9 @@ export function useSolver() {
   return {
     algorithm,
     clearResult,
-    difficulty,
     findSolution,
     heuristic,
     setAlgorithm,
-    setDifficulty,
     setHeuristic,
     solverResult,
     validationError,
@@ -85,14 +82,12 @@ function buildNote(result, algorithm) {
   return notes[algorithm] ?? 'Đã tìm thấy lời giải.'
 }
 
-export function validatePuzzle(bottles, difficultyId) {
-  const { bottleCount, colors } = getDifficultyConfig(difficultyId)
-
-  if (bottles.length !== bottleCount) {
-    return `Bài toán phải có đúng ${bottleCount} lọ.`
+export function validatePuzzle(bottles) {
+  if (bottles.length !== BOTTLE_COUNT) {
+    return `Bài toán phải có đúng ${BOTTLE_COUNT} lọ.`
   }
 
-  const counts = Object.fromEntries(colors.map((color) => [color, 0]))
+  const counts = Object.fromEntries(PUZZLE_COLORS.map((color) => [color, 0]))
   let totalLayers = 0
 
   for (let bottleIndex = 0; bottleIndex < bottles.length; bottleIndex += 1) {
@@ -103,7 +98,7 @@ export function validatePuzzle(bottles, difficultyId) {
     }
 
     for (const color of bottle) {
-      if (!colors.includes(color)) {
+      if (!PUZZLE_COLORS.includes(color)) {
         return `Lọ ${bottleIndex + 1} có màu không hợp lệ.`
       }
       counts[color] += 1
@@ -111,11 +106,11 @@ export function validatePuzzle(bottles, difficultyId) {
     }
   }
 
-  if (totalLayers !== colors.length * CAPACITY) {
-    return `Bài toán phải có đúng ${colors.length * CAPACITY} lớp màu.`
+  if (totalLayers !== PUZZLE_COLORS.length * CAPACITY) {
+    return `Bài toán phải có đúng ${PUZZLE_COLORS.length * CAPACITY} lớp màu.`
   }
 
-  for (const color of colors) {
+  for (const color of PUZZLE_COLORS) {
     if (counts[color] !== CAPACITY) {
       return `Màu ${COLOR_LABELS[color]} phải xuất hiện đúng ${CAPACITY} lần.`
     }

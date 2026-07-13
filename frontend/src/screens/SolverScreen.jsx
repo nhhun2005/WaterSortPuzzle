@@ -4,12 +4,11 @@ import Button from '../components/common/Button'
 import PuzzleEditor from '../components/solver/PuzzleEditor'
 import ResultPanel from '../components/solver/ResultPanel'
 import SelectorGroup from '../components/solver/SelectorGroup'
-import { ALGORITHMS, HEURISTIC_OPTIONS, getDifficultyConfig } from '../constants/game'
+import { ALGORITHMS, HEURISTIC_OPTIONS } from '../constants/game'
 import { generateRandomPuzzle } from '../lib/puzzleGenerator'
 
 function SolverScreen({
   algorithm,
-  difficulty,
   heuristic,
   onAlgorithmChange,
   onFindSolution,
@@ -19,16 +18,14 @@ function SolverScreen({
   validationError,
   usesHeuristic,
 }) {
-  const [bottles, setBottles] = useState(() => generateRandomPuzzle({ difficultyId: difficulty }))
+  const [bottles, setBottles] = useState(() => generateRandomPuzzle())
   const [sidebarOpen, setSidebarOpen] = useState(true)
   // Trang thai bai toan tuong ung voi buoc dang xem trong cay tim kiem.
   // Khi chua co ket qua hoac chua duyet buoc nao thi hien bai goc (bottles).
   const [stepBottles, setStepBottles] = useState(null)
 
-  const difficultyConfig = getDifficultyConfig(difficulty)
-
   function createRandomPuzzle() {
-    setBottles(generateRandomPuzzle({ difficultyId: difficulty }))
+    setBottles(generateRandomPuzzle())
     setStepBottles(null)
     onPuzzleChange()
   }
@@ -78,11 +75,10 @@ function SolverScreen({
           <div className="sidebar-section">
             <h2>Nhập bài cụ thể</h2>
             <p>Mỗi cột là một lọ, ô dưới là đáy lọ và ô trên là miệng lọ.</p>
-            <PuzzleEditor 
-              bottles={bottles} 
-              difficulty={difficulty}
-              error={validationError} 
-              onChange={updateBottles} 
+            <PuzzleEditor
+              bottles={bottles}
+              error={validationError}
+              onChange={updateBottles}
               showHeading={false}
             />
           </div>
@@ -133,7 +129,7 @@ function SolverScreen({
         <section className="solver-state-panel">
           <div className="solver-state-header">
             <h2>Trạng thái bài toán</h2>
-          
+
           </div>
           <BottleRack bottles={displayedBottles} />
         </section>

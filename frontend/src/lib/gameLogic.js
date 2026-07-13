@@ -1,4 +1,7 @@
-import { CAPACITY, COLOR_LABELS } from '../constants/game'
+import { CAPACITY } from '../constants/game'
+
+// Cac ham thao tac tren trang thai bai toan, dung chung cho bo giai va sinh de.
+// Moi lo la mot ngan xep mau xep tu day (index 0) len mieng (phan tu cuoi).
 
 export function cloneBottles(bottles) {
   return bottles.map((bottle) => [...bottle])
@@ -8,6 +11,7 @@ export function topColor(bottle) {
   return bottle[bottle.length - 1]
 }
 
+// Dem so vach mau cung mau lien tiep nam tren dinh lo.
 export function countTopRun(bottle) {
   const color = topColor(bottle)
   let count = 0
@@ -22,6 +26,7 @@ export function countTopRun(bottle) {
   return count
 }
 
+// Do chat long tu lo nguon sang lo dich neu hop le, tra ve trang thai moi va hanh dong.
 export function pourBetween(bottles, sourceIndex, targetIndex) {
   if (sourceIndex === targetIndex) {
     return null
@@ -60,6 +65,7 @@ export function pourBetween(bottles, sourceIndex, targetIndex) {
   }
 }
 
+// Trang thai ket thuc: moi lo hoac rong hoac chua dung 4 vach cung mau.
 export function isWinState(bottles) {
   return bottles.every((bottle) => bottle.length === 0 || isCompleteBottle(bottle))
 }
@@ -68,30 +74,4 @@ export function isCompleteBottle(bottle) {
   return (
     bottle.length === CAPACITY && bottle.every((color) => color === bottle[0])
   )
-}
-
-export function buildTimeline(initialBottles, steps) {
-  const timeline = [{ bottles: cloneBottles(initialBottles), action: null }]
-  let current = cloneBottles(initialBottles)
-
-  steps.forEach((step) => {
-    const result = pourBetween(current, step.from - 1, step.to - 1)
-    current = result ? result.bottles : current
-    timeline.push({
-      bottles: cloneBottles(current),
-      action: step,
-    })
-  })
-
-  return timeline
-}
-
-export function actionText(action) {
-  if (!action) {
-    return 'Initial state'
-  }
-
-  const label = COLOR_LABELS[action.color] ?? action.color
-  const unit = action.amount > 1 ? 'layers' : 'layer'
-  return `Pour ${action.amount} ${label.toLowerCase()} ${unit} from Bottle ${action.from} to Bottle ${action.to}`
 }
