@@ -9,7 +9,7 @@ import { PriorityQueue } from '../core/priorityQueue'
 import { getHeuristic } from '../heuristics'
 
 /**
- * A* Search.
+ * A* Search (Tìm kiếm A sao).
  *
  * Expands the node with the lowest f(n) = g(n) + h(n), balancing the cost paid
  * so far against the estimated cost to the goal. A `bestCost` map relaxes
@@ -21,9 +21,30 @@ import { getHeuristic } from '../heuristics'
  *
  * Completeness: yes. Optimality: yes (with an admissible heuristic).
  *
+ * -----------------------------------------------------------------------------
+ * ƯU ĐIỂM (điểm mạnh):
+ *  - Vừa NHANH vừa TỐI ƯU: kết hợp chi phí đã đi g(n) và ước lượng còn lại
+ *    h(n), nên tìm được lời giải ngắn nhất mà mở rộng ít node hơn BFS/UCS.
+ *  - Đầy đủ (complete) và tối ưu KHI heuristic là "admissible" (không bao giờ
+ *    ước lượng quá số bước còn lại) - đúng như các heuristic trong file này.
+ *  - Thường là lựa chọn cân bằng tốt nhất giữa tốc độ và chất lượng lời giải.
+ *
+ * NHƯỢC ĐIỂM (điểm yếu):
+ *  - Tốn BỘ NHỚ nhiều: phải lưu frontier và bảng bestCost, có thể phình to với
+ *    bài toán lớn.
+ *  - Chậm lại nếu heuristic yếu (gần bằng 0) -> lúc đó A* thoái hóa thành UCS.
+ *  - Nếu heuristic KHÔNG admissible (ước lượng quá tay) thì mất tính tối ưu.
+ *
+ * KHI NÀO TỐI ƯU: cần lời giải NGẮN NHẤT mà vẫn muốn nhanh, và có heuristic
+ *  admissible tốt.
+ * KHI NÀO YẾU: bộ nhớ hạn chế với bài toán cực lớn, hoặc heuristic quá kém
+ *  khiến nó chậm như UCS.
+ * -----------------------------------------------------------------------------
+ *
  * @param {string[][]} initialBottles
  * @param {string} heuristicLabel - which heuristic to use (see heuristics.js)
  */
+
 export function astar(initialBottles, heuristicLabel) {
   const startTime = performance.now()
   const heuristic = getHeuristic(heuristicLabel)

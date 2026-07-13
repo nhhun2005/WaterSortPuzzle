@@ -65,6 +65,10 @@
   background: rgba(54, 132, 255, 0.1);
 }
 
+.button-full-width {
+  width: 100%;
+}
+
 .segmented-control {
   display: flex;
   flex-wrap: wrap;

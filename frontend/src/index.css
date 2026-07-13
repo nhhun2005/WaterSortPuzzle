@@ -4,6 +4,7 @@
 @import './styles/bottle.css';
 @import './styles/screens.css';
 @import './styles/responsive.css';
+@import './styles/fullscreen.css';
 
 :root {
   --ink: #31506b;

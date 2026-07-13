@@ -252,16 +252,16 @@ export const HEURISTIC_OPTIONS = [
 
 ## 7. Checklist de agent trien khai
 
-- [ ] Tao hang so 8 lo/6 mau va label tieng Viet trong `constants/game.js`.
-- [ ] Tao `puzzleGenerator.js` voi solved state va random shuffle tu hanh dong hop le.
-- [ ] Tao `PuzzleEditor.jsx` cho combobox tung o va validation.
-- [ ] Refactor `App.jsx` de render mot page duy nhat.
-- [ ] Refactor `SolverScreen.jsx` thanh giao dien tieng Viet mot page.
-- [ ] Refactor `useSolver.js` de nhan puzzle state dong va luu search tree.
-- [ ] Mo rong BFS/DFS/UCS/Greedy/A* de tra `searchTree`.
-- [ ] Tao `SearchTree.jsx` va thay `StepList` trong `ResultPanel.jsx`.
-- [ ] Cap nhat CSS layout/responsive cho editor va cay tim kiem.
-- [ ] Chay `npm run build` trong `frontend` va sua loi neu co.
+- [x] Tao hang so 8 lo/6 mau va label tieng Viet trong `constants/game.js`.
+- [x] Tao `puzzleGenerator.js` voi solved state va random shuffle tu hanh dong hop le.
+- [x] Tao `PuzzleEditor.jsx` cho combobox tung o va validation.
+- [x] Refactor `App.jsx` de render mot page duy nhat.
+- [x] Refactor `SolverScreen.jsx` thanh giao dien tieng Viet mot page.
+- [x] Refactor `useSolver.js` de nhan puzzle state dong va luu search tree.
+- [x] Mo rong BFS/DFS/UCS/Greedy/A* de tra `searchTree`.
+- [x] Tao `SearchTree.jsx` va thay `StepList` trong `ResultPanel.jsx`.
+- [x] Cap nhat CSS layout/responsive cho editor va cay tim kiem.
+- [x] Chay `npm run build` trong `frontend` va sua loi neu co.
 
 ## 8. Goi y thu tu kiem thu thu cong
 

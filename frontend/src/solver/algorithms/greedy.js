@@ -8,7 +8,7 @@ import { PriorityQueue } from '../core/priorityQueue'
 import { getHeuristic } from '../heuristics'
 
 /**
- * Greedy Best-First Search.
+ * Greedy Best-First Search (Tìm kiếm tham lam theo heuristic).
  *
  * Always expands the node that looks closest to the goal according to the
  * heuristic h(n) alone, ignoring the cost already paid. This makes it fast and
@@ -17,9 +17,29 @@ import { getHeuristic } from '../heuristics'
  *
  * Completeness: yes (with a visited set on a finite graph). Optimality: no.
  *
+ * -----------------------------------------------------------------------------
+ * ƯU ĐIỂM (điểm mạnh):
+ *  - RẤT NHANH khi heuristic tốt: luôn lao thẳng về phía trông "gần đích"
+ *    nhất, nên thường chạm đích sau ít bước mở rộng.
+ *  - Tốn ÍT BỘ NHỚ và ít thời gian hơn BFS/UCS/A* trong nhiều trường hợp.
+ *  - Bắt đầu khai thác tri thức bài toán qua hàm heuristic.
+ *
+ * NHƯỢC ĐIỂM (điểm yếu):
+ *  - KHÔNG tối ưu: chỉ nhìn h(n) mà bỏ qua chi phí đã đi g(n), nên lời giải
+ *    tìm được có thể dài hơn nhiều so với ngắn nhất.
+ *  - Dễ bị "lừa": nếu heuristic ước lượng sai, nó lao vào ngõ cụt và chậm.
+ *  - Chất lượng phụ thuộc HOÀN TOÀN vào heuristic.
+ *
+ * KHI NÀO TỐI ƯU: heuristic sát thực tế và ta chỉ cần lời giải NHANH (không
+ *  bắt buộc ngắn nhất).
+ * KHI NÀO YẾU: heuristic kém/gây hiểu lầm, hoặc ta CẦN lời giải ngắn nhất ->
+ *  lúc đó nên dùng A*.
+ * -----------------------------------------------------------------------------
+ *
  * @param {string[][]} initialBottles
  * @param {string} heuristicLabel - which heuristic to use (see heuristics.js)
  */
+
 export function greedy(initialBottles, heuristicLabel) {
   const startTime = performance.now()
   const heuristic = getHeuristic(heuristicLabel)

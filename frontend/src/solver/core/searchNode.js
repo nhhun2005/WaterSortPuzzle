@@ -57,11 +57,15 @@ export function createSearchTreeTracker(maxNodes = MAX_TREE_NODES) {
       move: searchNode.move,
       cost: searchNode.cost,
       heuristic: searchNode.heuristic,
+      // Luu lai trang thai thuc te cua node de giao dien co the minh hoa
+      // trang thai bai toan tuong ung voi tung buoc.
+      bottles: searchNode.bottles.map((bottle) => [...bottle]),
       stateKey,
       expanded: false,
       isGoal: false,
       isSolutionPath: false,
     })
+
   }
 
   function update(id, patch) {

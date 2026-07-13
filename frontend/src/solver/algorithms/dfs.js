@@ -9,7 +9,7 @@ import {
 const DFS_MAX_DEPTH = 100
 
 /**
- * Depth-First Search.
+ * Depth-First Search (Tìm kiếm theo chiều sâu).
  *
  * Explores as deep as possible along one branch before backtracking, using a
  * LIFO stack. A depth limit prevents runaway branches on hard puzzles.
@@ -17,7 +17,29 @@ const DFS_MAX_DEPTH = 100
  * Completeness: yes within the depth bound. Optimality: no - the first
  * solution found is rarely the shortest, but DFS uses far less memory than
  * BFS and often reaches a goal quickly.
+ *
+ * -----------------------------------------------------------------------------
+ * ƯU ĐIỂM (điểm mạnh):
+ *  - Tốn RẤT ÍT BỘ NHỚ: chỉ cần lưu một nhánh đang đi (theo chiều sâu) chứ
+ *    không phải toàn bộ một tầng như BFS.
+ *  - Thường tìm thấy MỘT lời giải rất nhanh khi lời giải nằm sâu trên nhánh
+ *    mà DFS đi trúng.
+ *  - Cài đặt đơn giản bằng một ngăn xếp (stack), không cần heuristic.
+ *
+ * NHƯỢC ĐIỂM (điểm yếu):
+ *  - KHÔNG tối ưu: lời giải tìm được thường dài (nhiều bước thừa), hiếm khi là
+ *    ngắn nhất.
+ *  - Có thể "lạc" sâu vào một nhánh sai và tốn công; cần giới hạn độ sâu
+ *    (DFS_MAX_DEPTH) để tránh đi mãi không dừng.
+ *  - Nếu chọn sai nhánh đầu tiên, có thể chậm hơn BFS rất nhiều.
+ *
+ * KHI NÀO TỐI ƯU: chỉ cần TÌM ĐƯỢC một lời giải (không quan tâm ngắn hay dài)
+ *  và bộ nhớ hạn chế; lời giải thường nằm sâu.
+ * KHI NÀO YẾU: cần lời giải NGẮN NHẤT, hoặc cây tìm kiếm có nhiều nhánh sai/
+ *  vòng lặp khiến DFS đi sai hướng.
+ * -----------------------------------------------------------------------------
  */
+
 export function dfs(initialBottles) {
   const startTime = performance.now()
 

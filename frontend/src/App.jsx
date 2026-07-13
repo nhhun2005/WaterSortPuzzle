@@ -5,19 +5,19 @@ function App() {
   const solver = useSolver()
 
   return (
-    <main className="app">
-      <SolverScreen
-        algorithm={solver.algorithm}
-        onPuzzleChange={solver.clearResult}
-        heuristic={solver.heuristic}
-        onAlgorithmChange={solver.setAlgorithm}
-        onFindSolution={solver.findSolution}
-        onHeuristicChange={solver.setHeuristic}
-        result={solver.solverResult}
-        usesHeuristic={solver.usesHeuristic}
-        validationError={solver.validationError}
-      />
-    </main>
+    <SolverScreen
+      algorithm={solver.algorithm}
+      difficulty={solver.difficulty}
+      onPuzzleChange={solver.clearResult}
+      heuristic={solver.heuristic}
+      onAlgorithmChange={solver.setAlgorithm}
+      onDifficultyChange={solver.setDifficulty}
+      onFindSolution={solver.findSolution}
+      onHeuristicChange={solver.setHeuristic}
+      result={solver.solverResult}
+      usesHeuristic={solver.usesHeuristic}
+      validationError={solver.validationError}
+    />
   )
 }
 
