@@ -22,7 +22,7 @@ export const DIFFICULTY_OPTIONS = DIFFICULTY_LEVELS.map((level) => ({
   label: level.label,
 }))
 
-export const DEFAULT_DIFFICULTY = 'medium'
+export const DEFAULT_DIFFICULTY = 'easy'
 
 export function getDifficultyConfig(difficultyId = DEFAULT_DIFFICULTY) {
   const level =

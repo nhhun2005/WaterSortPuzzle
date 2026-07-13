@@ -11,7 +11,6 @@ function App() {
       onPuzzleChange={solver.clearResult}
       heuristic={solver.heuristic}
       onAlgorithmChange={solver.setAlgorithm}
-      onDifficultyChange={solver.setDifficulty}
       onFindSolution={solver.findSolution}
       onHeuristicChange={solver.setHeuristic}
       result={solver.solverResult}

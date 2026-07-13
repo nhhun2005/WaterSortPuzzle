@@ -4,12 +4,7 @@ import Button from '../components/common/Button'
 import PuzzleEditor from '../components/solver/PuzzleEditor'
 import ResultPanel from '../components/solver/ResultPanel'
 import SelectorGroup from '../components/solver/SelectorGroup'
-import {
-  ALGORITHMS,
-  DIFFICULTY_OPTIONS,
-  HEURISTIC_OPTIONS,
-  getDifficultyConfig,
-} from '../constants/game'
+import { ALGORITHMS, HEURISTIC_OPTIONS, getDifficultyConfig } from '../constants/game'
 import { generateRandomPuzzle } from '../lib/puzzleGenerator'
 
 function SolverScreen({
@@ -17,7 +12,6 @@ function SolverScreen({
   difficulty,
   heuristic,
   onAlgorithmChange,
-  onDifficultyChange,
   onFindSolution,
   onHeuristicChange,
   onPuzzleChange,
@@ -41,13 +35,6 @@ function SolverScreen({
 
   function updateBottles(nextBottles) {
     setBottles(nextBottles)
-    setStepBottles(null)
-    onPuzzleChange()
-  }
-
-  function changeDifficulty(nextDifficulty) {
-    onDifficultyChange(nextDifficulty)
-    setBottles(generateRandomPuzzle({ difficultyId: nextDifficulty }))
     setStepBottles(null)
     onPuzzleChange()
   }
@@ -80,12 +67,6 @@ function SolverScreen({
 
           <div className="sidebar-section">
             <h2>Điều khiển</h2>
-            <SelectorGroup
-              label="Mức độ phức tạp"
-              onChange={changeDifficulty}
-              options={DIFFICULTY_OPTIONS}
-              value={difficulty}
-            />
             <div className="sidebar-buttons">
               <Button variant="primary" onClick={createRandomPuzzle}>
                 Tạo bài ngẫu nhiên
