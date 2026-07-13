@@ -25,7 +25,6 @@ function ResultPanel({ result, usesHeuristic, onStepChange, bottles }) {
       <div className="result-panel">
         <div className="result-header">
           <div>
-            <p className="eyebrow">Water Sort Puzzle - Bộ giải</p>
             <h2>Cây tìm kiếm</h2>
             <p>
               Chọn thuật toán rồi nhấn "Tìm lời giải" để mở rộng cây từ nút gốc bên dưới.

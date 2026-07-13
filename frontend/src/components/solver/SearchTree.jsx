@@ -217,11 +217,6 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
         </div>
       </div>
 
-      <div className="tree-legend">
-        <span className="legend-item legend-solution">Đường lời giải</span>
-        <span className="legend-item legend-goal">Đích</span>
-        <span className="legend-item legend-expanded">Đã mở rộng</span>
-      </div>
 
       <div
         className={isDragging ? 'tree-canvas-scroll dragging' : 'tree-canvas-scroll'}

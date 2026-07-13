@@ -133,11 +133,7 @@ function SolverScreen({
         <section className="solver-state-panel">
           <div className="solver-state-header">
             <h2>Trạng thái bài toán</h2>
-            <p>
-              {stepBottles
-                ? 'Đang minh họa trạng thái theo bước bạn đang xem trong cây tìm kiếm.'
-                : `Cố định ${difficultyConfig.bottleCount} lọ, ${difficultyConfig.colors.length} màu, mỗi lọ chứa tối đa ${difficultyConfig.capacity} lớp.`}
-            </p>
+          
           </div>
           <BottleRack bottles={displayedBottles} />
         </section>
