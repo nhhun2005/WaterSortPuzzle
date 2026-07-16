@@ -68,8 +68,12 @@ export function useSolver() {
 
 function buildNote(result, algorithm) {
   if (!result.solved) {
+    if (result.timedOut) {
+      return 'Đã dừng vì vượt quá 10 giây tìm kiếm (chưa tìm ra lời giải).'
+    }
     return 'Không tìm thấy lời giải cho trạng thái này.'
   }
+
 
   const notes = {
     BFS: 'Tìm theo chiều rộng, đảm bảo ít nước đi nhất khi mỗi bước có cùng chi phí.',

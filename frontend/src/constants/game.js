@@ -23,10 +23,11 @@ export const HEURISTICS = [
 ]
 
 export const HEURISTIC_OPTIONS = [
-  { value: 'Misplaced color blocks', label: 'Số vạch màu sai vị trí' },
+  { value: 'Misplaced color blocks', label: 'Kết hợp' },
   { value: 'Incomplete bottles', label: 'Số lọ chưa hoàn thiện' },
   { value: 'Color transition count', label: 'Số lần chuyển màu' },
 ]
+
 
 export function algorithmUsesHeuristic(algorithm) {
   return HEURISTIC_ALGORITHMS.includes(algorithm)

@@ -1,4 +1,4 @@
-import { generateNextStates, isEnd, serializeState } from '../core/state'
+import { generateNextStates, isEnd, isTimedOut, serializeState } from '../core/state'
 import {
   createNode,
   createSearchTreeTracker,
@@ -15,28 +15,23 @@ import { getHeuristic } from '../heuristics'
  * so far against the estimated cost to the goal. A `bestCost` map relaxes
  * nodes so cheaper paths replace more expensive ones.
  *
- * Because all heuristics in heuristics.js are admissible (they never
- * overestimate the remaining pours), A* returns an optimal, fewest-move
- * solution while exploring far fewer states than BFS/UCS.
- *
- * Completeness: yes. Optimality: yes (with an admissible heuristic).
+ * By combining g(n) and h(n) it usually reaches the goal after expanding far
+ * fewer nodes than BFS/UCS.
  *
  * -----------------------------------------------------------------------------
  * ƯU ĐIỂM (điểm mạnh):
- *  - Vừa NHANH vừa TỐI ƯU: kết hợp chi phí đã đi g(n) và ước lượng còn lại
- *    h(n), nên tìm được lời giải ngắn nhất mà mở rộng ít node hơn BFS/UCS.
- *  - Đầy đủ (complete) và tối ưu KHI heuristic là "admissible" (không bao giờ
- *    ước lượng quá số bước còn lại) - đúng như các heuristic trong file này.
- *  - Thường là lựa chọn cân bằng tốt nhất giữa tốc độ và chất lượng lời giải.
+ *  - Vừa NHANH vừa "có định hướng": kết hợp chi phí đã đi g(n) và ước lượng
+ *    còn lại h(n), nên thường mở rộng ít node hơn BFS/UCS.
+ *  - Đầy đủ (complete): có lời giải thì tìm thấy.
+ *  - Thường là lựa chọn cân bằng tốt giữa tốc độ và chất lượng lời giải.
  *
  * NHƯỢC ĐIỂM (điểm yếu):
  *  - Tốn BỘ NHỚ nhiều: phải lưu frontier và bảng bestCost, có thể phình to với
  *    bài toán lớn.
  *  - Chậm lại nếu heuristic yếu (gần bằng 0) -> lúc đó A* thoái hóa thành UCS.
- *  - Nếu heuristic KHÔNG admissible (ước lượng quá tay) thì mất tính tối ưu.
+ *  - Chất lượng lời giải phụ thuộc vào hàm heuristic được chọn.
  *
- * KHI NÀO TỐI ƯU: cần lời giải NGẮN NHẤT mà vẫn muốn nhanh, và có heuristic
- *  admissible tốt.
+ * KHI NÀO MẠNH: cần lời giải nhanh với heuristic dẫn đường tốt.
  * KHI NÀO YẾU: bộ nhớ hạn chế với bài toán cực lớn, hoặc heuristic quá kém
  *  khiến nó chậm như UCS.
  * -----------------------------------------------------------------------------
@@ -44,6 +39,7 @@ import { getHeuristic } from '../heuristics'
  * @param {string[][]} initialBottles
  * @param {string} heuristicLabel - which heuristic to use (see heuristics.js)
  */
+
 
 export function astar(initialBottles, heuristicLabel) {
   const startTime = performance.now()
@@ -61,6 +57,11 @@ export function astar(initialBottles, heuristicLabel) {
   bestCost.set(rootKey, 0)
 
   while (!frontier.isEmpty()) {
+    // Dung lai neu vuot qua gioi han thoi gian (mac dinh 10 giay).
+    if (isTimedOut(startTime)) {
+      return buildResult(false, null, bestCost.size, exploredStates, startTime, tree, true)
+    }
+
     const current = frontier.pop()
     const currentKey = serializeState(current.bottles)
 
@@ -101,7 +102,7 @@ export function astar(initialBottles, heuristicLabel) {
   return buildResult(false, null, bestCost.size, exploredStates, startTime, tree)
 }
 
-function buildResult(solved, goalNode, visited, explored, startTime, tree) {
+function buildResult(solved, goalNode, visited, explored, startTime, tree, timedOut = false) {
   if (solved) {
     tree.markGoal(goalNode)
     tree.markSolutionPath(goalNode)
@@ -115,5 +116,6 @@ function buildResult(solved, goalNode, visited, explored, startTime, tree) {
     timeMs: performance.now() - startTime,
     searchTree: treeResult.searchTree,
     truncated: treeResult.truncated,
+    timedOut,
   }
 }

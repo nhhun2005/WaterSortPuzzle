@@ -26,7 +26,20 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
   // khi chuyển bước. Việc ẩn/hiện chỉ thay đổi lớp hiển thị.
   const layout = useMemo(() => buildLayout(nodes), [nodes])
 
-  const totalSteps = nodes.length
+  // Buoc cuoi cung nen dung tai node DICH (trang thai da giai) neu co loi giai.
+  //
+  // Ly do: cac thuat toan nhu BFS/UCS/Greedy/A* THEM node dich vao frontier
+  // ngay khi SINH ra no, nhung van tiep tuc mo rong nhieu node khac (sinh them
+  // rat nhieu con) cho toi khi node dich duoc lay ra khoi frontier. Nhung node
+  // sinh ra SAU node dich co treeId lon hon nen "buoc cuoi" theo nodes.length
+  // se roi vao mot trang thai lung chung, khong phai trang thai da giai.
+  //
+  // Chi rieng DFS (dung ngan xep, di sau) moi tinh co lay node dich la node
+  // sinh cuoi cung, nen truoc day chi DFS hien dung. Gio ta gioi han so buoc
+  // toi dung node dich de moi thuat toan deu ket thuc o trang thai da giai.
+  const goalNode = useMemo(() => nodes.find((node) => node.isGoal) ?? null, [nodes])
+  const totalSteps = goalNode ? goalNode.id : nodes.length
+
 
   const [currentStep, setCurrentStep] = useState(1)
 

@@ -1,6 +1,22 @@
 import { isWinState, pourBetween } from '../../lib/gameLogic'
 
 /**
+ * Gioi han thoi gian chay cho moi thuat toan tim kiem (mili giay).
+ *
+ * Thay cho viec gioi han so buoc / so node toi da, cac thuat toan se chay cho
+ * toi khi tim ra loi giai HOAC vuot qua moc thoi gian nay thi dung lai va bao
+ * "het thoi gian". Nho vay khong con truong hop dung lung chung do cham tran
+ * so node, dong thoi tranh treo trinh duyet voi bai toan qua lon.
+ */
+export const SOLVER_TIMEOUT_MS = 10000
+
+/** Tien ich kiem tra xem da vuot qua gioi han thoi gian hay chua. */
+export function isTimedOut(startTime, limitMs = SOLVER_TIMEOUT_MS) {
+  return performance.now() - startTime > limitMs
+}
+
+
+/**
  * State representation
  * -------------------
  * A state is simply an array of bottles, where each bottle is an array of

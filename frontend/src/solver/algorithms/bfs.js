@@ -1,4 +1,5 @@
-import { generateNextStates, isEnd, serializeState } from '../core/state'
+import { generateNextStates, isEnd, isTimedOut, serializeState } from '../core/state'
+
 import {
   createNode,
   createSearchTreeTracker,
@@ -51,10 +52,16 @@ export function bfs(initialBottles) {
   visited.add(rootKey)
 
   while (head < queue.length) {
+    // Dung lai neu vuot qua gioi han thoi gian (mac dinh 10 giay).
+    if (isTimedOut(startTime)) {
+      return buildResult(false, null, visited.size, exploredStates, startTime, tree, true)
+    }
+
     const current = queue[head]
     head += 1
     exploredStates += 1
     tree.markExpanded(current)
+
 
     if (isEnd(current.bottles)) {
       return buildResult(true, current, visited.size, exploredStates, startTime, tree)
@@ -81,7 +88,7 @@ export function bfs(initialBottles) {
   return buildResult(false, null, visited.size, exploredStates, startTime, tree)
 }
 
-function buildResult(solved, goalNode, visited, explored, startTime, tree) {
+function buildResult(solved, goalNode, visited, explored, startTime, tree, timedOut = false) {
   if (solved) {
     tree.markGoal(goalNode)
     tree.markSolutionPath(goalNode)
@@ -95,5 +102,7 @@ function buildResult(solved, goalNode, visited, explored, startTime, tree) {
     timeMs: performance.now() - startTime,
     searchTree: treeResult.searchTree,
     truncated: treeResult.truncated,
+    timedOut,
   }
 }
+

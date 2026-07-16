@@ -5,11 +5,11 @@ import { CAPACITY } from '../constants/game'
  *
  * Every function here is fully computed from the actual bottle contents -
  * there are no magic constants or approximations. Each returns 0 exactly when
- * the state is already solved, which keeps Greedy/A* honest about goals.
- *
- * All three are admissible lower bounds on the number of remaining pours, so
- * A* using any of them returns an optimal (fewest-move) solution.
+ * the state is already solved, so Greedy/A* recognise a finished puzzle.
+ * Each function estimates how much work remains from a given state; Greedy
+ * and A* use that estimate to decide which node to expand next.
  */
+
 
 function isComplete(bottle) {
   return (
@@ -21,10 +21,10 @@ function isComplete(bottle) {
  * Color transition count.
  *
  * Counts, across all bottles, every adjacent pair of layers with a different
- * color. A solved bottle is a single uniform block, so it contributes 0.
- * Each pour can remove at most one transition (it moves one top run onto a
- * matching color), so this never overestimates the remaining work.
+ * color. A solved bottle is a single uniform block, so it contributes 0, and
+ * a more fragmented state scores higher.
  */
+
 export function colorTransitionCount(bottles) {
   let transitions = 0
 
@@ -73,9 +73,9 @@ export function misplacedColorBlocks(bottles) {
  * Incomplete bottles.
  *
  * The simplest of the three: the number of non-empty bottles that are not yet
- * a finished single color. Each such bottle needs at least one more pour, so
- * the count is a valid lower bound.
+ * a finished single color. A solved state scores 0.
  */
+
 export function incompleteBottles(bottles) {
   let score = 0
 

@@ -34,20 +34,21 @@ export function reconstructMoves(goalNode) {
   return moves
 }
 
-export const MAX_TREE_NODES = 500
-
-export function createSearchTreeTracker(maxNodes = MAX_TREE_NODES) {
+/**
+ * Truoc day cay tim kiem bi gioi han 500 node ("số step tối đa"), khien
+ * BFS/UCS bi cat ngang va dung o trang thai lung chung. Nay ta BO gioi han do:
+ * cay luu lai TOAN BO node ma thuat toan sinh ra trong pham vi 10 giay
+ * (xem SOLVER_TIMEOUT_MS trong core/state.js). `truncated` giu lai de tuong
+ * thich nhung luon la false.
+ */
+export function createSearchTreeTracker() {
   const nodes = []
   let nextId = 1
-  let truncated = false
+  const truncated = false
 
   function add(searchNode, stateKey) {
-    if (nodes.length >= maxNodes) {
-      truncated = true
-      return
-    }
-
     const id = nextId
+
     nextId += 1
     searchNode.treeId = id
     nodes.push({

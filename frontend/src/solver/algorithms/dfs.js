@@ -1,18 +1,17 @@
-import { generateNextStates, isEnd, serializeState } from '../core/state'
+import { generateNextStates, isEnd, isTimedOut, serializeState } from '../core/state'
 import {
   createNode,
   createSearchTreeTracker,
   reconstructMoves,
 } from '../core/searchNode'
 
-/** Safety bound on search depth, mirrors the original Java DFS_MAX_DEPTH. */
-const DFS_MAX_DEPTH = 100
 
 /**
  * Depth-First Search (Tìm kiếm theo chiều sâu).
  *
  * Explores as deep as possible along one branch before backtracking, using a
- * LIFO stack. A depth limit prevents runaway branches on hard puzzles.
+ * LIFO stack. A 10-second time limit (SOLVER_TIMEOUT_MS) stops runaway
+ * branches on hard puzzles instead of a fixed depth cap.
  *
  * Completeness: yes within the depth bound. Optimality: no - the first
  * solution found is rarely the shortest, but DFS uses far less memory than
@@ -29,8 +28,8 @@ const DFS_MAX_DEPTH = 100
  * NHƯỢC ĐIỂM (điểm yếu):
  *  - KHÔNG tối ưu: lời giải tìm được thường dài (nhiều bước thừa), hiếm khi là
  *    ngắn nhất.
- *  - Có thể "lạc" sâu vào một nhánh sai và tốn công; cần giới hạn độ sâu
- *    (DFS_MAX_DEPTH) để tránh đi mãi không dừng.
+ *  - Có thể "lạc" sâu vào một nhánh sai và tốn công; cần giới hạn thời gian
+ *    (SOLVER_TIMEOUT_MS = 10 giây) để tránh đi mãi không dừng.
  *  - Nếu chọn sai nhánh đầu tiên, có thể chậm hơn BFS rất nhiều.
  *
  * KHI NÀO TỐI ƯU: chỉ cần TÌM ĐƯỢC một lời giải (không quan tâm ngắn hay dài)
@@ -55,16 +54,17 @@ export function dfs(initialBottles) {
   visited.add(rootKey)
 
   while (stack.length > 0) {
+    // Dung lai neu vuot qua gioi han thoi gian (mac dinh 10 giay).
+    if (isTimedOut(startTime)) {
+      return buildResult(false, null, visited.size, exploredStates, startTime, tree, true)
+    }
+
     const current = stack.pop()
     exploredStates += 1
     tree.markExpanded(current)
 
     if (isEnd(current.bottles)) {
       return buildResult(true, current, visited.size, exploredStates, startTime, tree)
-    }
-
-    if (current.depth >= DFS_MAX_DEPTH) {
-      continue
     }
 
     const nextStates = generateNextStates(current.bottles)
@@ -91,7 +91,7 @@ export function dfs(initialBottles) {
   return buildResult(false, null, visited.size, exploredStates, startTime, tree)
 }
 
-function buildResult(solved, goalNode, visited, explored, startTime, tree) {
+function buildResult(solved, goalNode, visited, explored, startTime, tree, timedOut = false) {
   if (solved) {
     tree.markGoal(goalNode)
     tree.markSolutionPath(goalNode)
@@ -105,5 +105,6 @@ function buildResult(solved, goalNode, visited, explored, startTime, tree) {
     timeMs: performance.now() - startTime,
     searchTree: treeResult.searchTree,
     truncated: treeResult.truncated,
+    timedOut,
   }
 }

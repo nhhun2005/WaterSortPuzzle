@@ -1,4 +1,4 @@
-import { generateNextStates, isEnd, serializeState } from '../core/state'
+import { generateNextStates, isEnd, isTimedOut, serializeState } from '../core/state'
 import {
   createNode,
   createSearchTreeTracker,
@@ -51,6 +51,11 @@ export function ucs(initialBottles) {
   bestCost.set(rootKey, 0)
 
   while (!frontier.isEmpty()) {
+    // Dung lai neu vuot qua gioi han thoi gian (mac dinh 10 giay).
+    if (isTimedOut(startTime)) {
+      return buildResult(false, null, bestCost.size, exploredStates, startTime, tree, true)
+    }
+
     const current = frontier.pop()
     const currentKey = serializeState(current.bottles)
 
@@ -91,7 +96,7 @@ export function ucs(initialBottles) {
   return buildResult(false, null, bestCost.size, exploredStates, startTime, tree)
 }
 
-function buildResult(solved, goalNode, visited, explored, startTime, tree) {
+function buildResult(solved, goalNode, visited, explored, startTime, tree, timedOut = false) {
   if (solved) {
     tree.markGoal(goalNode)
     tree.markSolutionPath(goalNode)
@@ -105,5 +110,6 @@ function buildResult(solved, goalNode, visited, explored, startTime, tree) {
     timeMs: performance.now() - startTime,
     searchTree: treeResult.searchTree,
     truncated: treeResult.truncated,
+    timedOut,
   }
 }
