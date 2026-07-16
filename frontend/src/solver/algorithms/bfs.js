@@ -6,42 +6,12 @@ import {
   reconstructMoves,
 } from '../core/searchNode'
 
-/**
- * Breadth-First Search (Tìm kiếm theo chiều rộng).
- *
- * Explores the search tree level by level using a FIFO queue. Because every
- * move has the same cost, the first time BFS reaches the goal it has found a
- * solution with the fewest possible moves (optimal in path length).
- *
- * Completeness: yes. Optimality: yes (uniform step cost). Memory is the main
- * cost, since the frontier can grow very wide.
- *
- * -----------------------------------------------------------------------------
- * ƯU ĐIỂM (điểm mạnh):
- *  - Luôn tìm ra lời giải NGẮN NHẤT (ít bước đi nhất) vì mỗi bước có chi phí
- *    bằng nhau và BFS duyệt theo từng tầng.
- *  - Đầy đủ (complete): nếu bài toán có lời giải, BFS chắc chắn tìm thấy.
- *  - Đơn giản, dễ hiểu, không cần hàm heuristic.
- *
- * NHƯỢC ĐIỂM (điểm yếu):
- *  - Tốn BỘ NHỚ rất lớn: hàng đợi (frontier) phình to theo cấp số nhân vì phải
- *    lưu toàn bộ các node của mỗi tầng trước khi sang tầng sau.
- *  - Chậm khi bài toán sâu (lời giải cần nhiều bước) hoặc có nhiều màu/lọ, vì
- *    số trạng thái bùng nổ theo cấp số nhân.
- *
- * KHI NÀO TỐI ƯU: lời giải nông (ít bước), số lọ / số màu nhỏ, và ta CẦN lời
- *  giải ngắn nhất một cách chắc chắn.
- * KHI NÀO YẾU: bài toán lớn/sâu khiến số trạng thái quá nhiều -> hết RAM và
- *  chạy rất chậm.
- * -----------------------------------------------------------------------------
- */
-
 export function bfs(initialBottles) {
   const startTime = performance.now()
 
   const visited = new Set()
   const queue = []
-  let head = 0 // index-based dequeue to avoid O(n) Array.shift
+  let head = 0
   let exploredStates = 0
   const tree = createSearchTreeTracker()
 
@@ -52,7 +22,6 @@ export function bfs(initialBottles) {
   visited.add(rootKey)
 
   while (head < queue.length) {
-    // Dung lai neu vuot qua gioi han thoi gian (mac dinh 10 giay).
     if (isTimedOut(startTime)) {
       return buildResult(false, null, visited.size, exploredStates, startTime, tree, true)
     }
@@ -105,4 +74,3 @@ function buildResult(solved, goalNode, visited, explored, startTime, tree, timed
     timedOut,
   }
 }
-

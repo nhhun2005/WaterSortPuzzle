@@ -8,35 +8,9 @@ const H_GAP = 26
 const V_GAP = 54
 const PADDING = 24
 
-/**
- * Vẽ cây tìm kiếm theo dạng sơ đồ cây từ trên xuống: node gốc ở trên cùng,
- * các node con tỏa xuống dưới và được nối với node cha bằng đường cong.
- *
- * Giao diện xem theo từng bước: bước 1 là gốc, bước 2, 3, 4... là mỗi lần
- * thuật toán mở rộng / sinh thêm một trạng thái. Người dùng có thể:
- *  - Lùi/tiến từng bước bằng nút ← →.
- *  - Nhập thẳng số bước muốn tới.
- *  - Nhảy về bước đầu hoặc bước cuối.
- *  - Click trực tiếp một node/hành động trên cây để xem trạng thái tương ứng.
- * Mỗi khi đổi bước, canvas sẽ focus vào node vừa chọn và báo cho màn hình
- * cha biết trạng thái bài toán tương ứng (qua onStepChange).
- */
 function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepChange }) {
-  // Layout được dùng một lần cho toàn bộ cây để vị trí node không bị nhảy
-  // khi chuyển bước. Việc ẩn/hiện chỉ thay đổi lớp hiển thị.
   const layout = useMemo(() => buildLayout(nodes), [nodes])
 
-  // Buoc cuoi cung nen dung tai node DICH (trang thai da giai) neu co loi giai.
-  //
-  // Ly do: cac thuat toan nhu BFS/UCS/Greedy/A* THEM node dich vao frontier
-  // ngay khi SINH ra no, nhung van tiep tuc mo rong nhieu node khac (sinh them
-  // rat nhieu con) cho toi khi node dich duoc lay ra khoi frontier. Nhung node
-  // sinh ra SAU node dich co treeId lon hon nen "buoc cuoi" theo nodes.length
-  // se roi vao mot trang thai lung chung, khong phai trang thai da giai.
-  //
-  // Chi rieng DFS (dung ngan xep, di sau) moi tinh co lay node dich la node
-  // sinh cuoi cung, nen truoc day chi DFS hien dung. Gio ta gioi han so buoc
-  // toi dung node dich de moi thuat toan deu ket thuc o trang thai da giai.
   const goalNode = useMemo(() => nodes.find((node) => node.isGoal) ?? null, [nodes])
   const totalSteps = goalNode ? goalNode.id : nodes.length
 
@@ -47,12 +21,10 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
   const dragState = useRef(null)
   const [isDragging, setIsDragging] = useState(false)
 
-  // Khi cây thay đổi (giải bài mới), quay về bước 1.
   useEffect(() => {
     setCurrentStep(1)
   }, [nodes])
 
-  // Node đang được xem theo bước hiện tại.
   const currentNode = useMemo(() => {
     if (!layout) {
       return null
@@ -60,14 +32,12 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
     return layout.positioned.find((node) => node.id === currentStep) ?? null
   }, [layout, currentStep])
 
-  // Báo cho màn hình cha biết trạng thái bài toán của bước hiện tại.
   useEffect(() => {
     if (onStepChange) {
       onStepChange(currentNode?.bottles ?? null)
     }
   }, [currentNode, onStepChange])
 
-  // Điều hướng canvas đến node đang xem.
   useEffect(() => {
     const scroller = scrollRef.current
     if (!scroller || !currentNode) {
@@ -106,7 +76,6 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
   }
 
   function handlePointerDown(event) {
-    // Chỉ kéo bằng chuột trái hoặc chạm, không chặn tương tác khác.
     if (event.button !== 0) {
       return
     }
@@ -159,7 +128,6 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
 
   const { positioned, edges, width, height, byId } = layout
 
-  // Node hiển thị là các node từ gốc đến bước hiện tại.
   function isVisible(node) {
     return Boolean(node) && node.id <= currentStep
   }
@@ -329,10 +297,6 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
   )
 }
 
-/**
- * Tính tọa độ cho từng node bằng thuật toán bố trí cây đơn giản:
- * lá được xếp tuần tự theo trục ngang, node cha được căn giữa các con.
- */
 function buildLayout(nodes) {
   if (nodes.length === 0) {
     return null

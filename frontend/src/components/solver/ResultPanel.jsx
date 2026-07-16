@@ -4,8 +4,6 @@ import SearchTree from './SearchTree'
 
 function ResultPanel({ result, usesHeuristic, onStepChange, bottles }) {
   if (!result) {
-    // Chua co ket qua: hien ngay cay tim kiem chi voi node goc la trang thai
-    // bai toan hien tai, thay vi hien huong dan.
     const rootTree = [
       {
         id: 1,

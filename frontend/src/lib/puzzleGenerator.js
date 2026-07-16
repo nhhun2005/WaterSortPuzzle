@@ -1,7 +1,6 @@
 import { BOTTLE_COUNT, CAPACITY, PUZZLE_COLORS } from '../constants/game'
 import { cloneBottles, countTopRun, isWinState, topColor } from './gameLogic'
 
-// Tao trang thai da giai xong: moi mau day mot lo, cac lo con lai de rong.
 export function createSolvedPuzzle() {
   const filled = PUZZLE_COLORS.map((color) => Array(CAPACITY).fill(color))
   const emptyCount = BOTTLE_COUNT - filled.length

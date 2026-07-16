@@ -287,7 +287,6 @@
   outline-offset: 1px;
 }
 
-/* Color indicators for editor cells */
 .editor-cell[data-color="red"] {
   background: linear-gradient(180deg, #ff7e9b, #ef3e64);
   color: white;

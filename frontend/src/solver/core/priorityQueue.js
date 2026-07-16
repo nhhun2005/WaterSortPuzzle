@@ -1,10 +1,3 @@
-/**
- * Binary min-heap priority queue.
- *
- * Used by UCS, Greedy and A* to always expand the most promising node first.
- * The `compare(a, b)` function must return a negative number when `a` should
- * come out before `b` (i.e. `a` has higher priority / lower score).
- */
 export class PriorityQueue {
   constructor(compare) {
     this.compare = compare

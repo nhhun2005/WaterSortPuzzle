@@ -8,39 +8,6 @@ import {
 import { PriorityQueue } from '../core/priorityQueue'
 import { getHeuristic } from '../heuristics'
 
-/**
- * A* Search (Tìm kiếm A sao).
- *
- * Expands the node with the lowest f(n) = g(n) + h(n), balancing the cost paid
- * so far against the estimated cost to the goal. A `bestCost` map relaxes
- * nodes so cheaper paths replace more expensive ones.
- *
- * By combining g(n) and h(n) it usually reaches the goal after expanding far
- * fewer nodes than BFS/UCS.
- *
- * -----------------------------------------------------------------------------
- * ƯU ĐIỂM (điểm mạnh):
- *  - Vừa NHANH vừa "có định hướng": kết hợp chi phí đã đi g(n) và ước lượng
- *    còn lại h(n), nên thường mở rộng ít node hơn BFS/UCS.
- *  - Đầy đủ (complete): có lời giải thì tìm thấy.
- *  - Thường là lựa chọn cân bằng tốt giữa tốc độ và chất lượng lời giải.
- *
- * NHƯỢC ĐIỂM (điểm yếu):
- *  - Tốn BỘ NHỚ nhiều: phải lưu frontier và bảng bestCost, có thể phình to với
- *    bài toán lớn.
- *  - Chậm lại nếu heuristic yếu (gần bằng 0) -> lúc đó A* thoái hóa thành UCS.
- *  - Chất lượng lời giải phụ thuộc vào hàm heuristic được chọn.
- *
- * KHI NÀO MẠNH: cần lời giải nhanh với heuristic dẫn đường tốt.
- * KHI NÀO YẾU: bộ nhớ hạn chế với bài toán cực lớn, hoặc heuristic quá kém
- *  khiến nó chậm như UCS.
- * -----------------------------------------------------------------------------
- *
- * @param {string[][]} initialBottles
- * @param {string} heuristicLabel - which heuristic to use (see heuristics.js)
- */
-
-
 export function astar(initialBottles, heuristicLabel) {
   const startTime = performance.now()
   const heuristic = getHeuristic(heuristicLabel)
@@ -57,7 +24,6 @@ export function astar(initialBottles, heuristicLabel) {
   bestCost.set(rootKey, 0)
 
   while (!frontier.isEmpty()) {
-    // Dung lai neu vuot qua gioi han thoi gian (mac dinh 10 giay).
     if (isTimedOut(startTime)) {
       return buildResult(false, null, bestCost.size, exploredStates, startTime, tree, true)
     }
@@ -65,7 +31,6 @@ export function astar(initialBottles, heuristicLabel) {
     const current = frontier.pop()
     const currentKey = serializeState(current.bottles)
 
-    // Skip stale entries left behind after a cheaper relaxation.
     const knownCost = bestCost.get(currentKey)
     if (knownCost !== undefined && current.cost > knownCost) {
       continue

@@ -1,5 +1,3 @@
-// Cau hinh co dinh cua bai toan theo dung pham vi bao cao:
-// 3 mau sac, moi mau 4 vach chat long, tong cong 5 lo thuy tinh.
 export const CAPACITY = 4
 
 export const BOTTLE_COUNT = 5
@@ -17,13 +15,13 @@ export const ALGORITHMS = ['BFS', 'DFS', 'UCS', 'Greedy', 'A*']
 export const HEURISTIC_ALGORITHMS = ['Greedy', 'A*']
 
 export const HEURISTICS = [
-  'Misplaced color blocks',
+  'Combined',
   'Incomplete bottles',
   'Color transition count',
 ]
 
 export const HEURISTIC_OPTIONS = [
-  { value: 'Misplaced color blocks', label: 'Kết hợp' },
+  { value: 'Combined', label: 'Kết hợp' },
   { value: 'Incomplete bottles', label: 'Số lọ chưa hoàn thiện' },
   { value: 'Color transition count', label: 'Số lần chuyển màu' },
 ]
