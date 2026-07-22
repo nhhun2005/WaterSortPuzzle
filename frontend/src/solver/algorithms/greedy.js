@@ -11,9 +11,7 @@ export function greedy(initialBottles, heuristicLabel) {
   const startTime = performance.now()
   const heuristic = getHeuristic(heuristicLabel)
 
-  const frontier = new PriorityQueue(
-    (a, b) => a.heuristic - b.heuristic || a.treeId - b.treeId,
-  )
+  const frontier = new PriorityQueue((a, b) => a.heuristic - b.heuristic)
   const visited = new Set()
   let exploredStates = 0
   const tree = createSearchTreeTracker()

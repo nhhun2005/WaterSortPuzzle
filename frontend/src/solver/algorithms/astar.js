@@ -12,9 +12,7 @@ export function astar(initialBottles, heuristicLabel) {
   const startTime = performance.now()
   const heuristic = getHeuristic(heuristicLabel)
 
-  const frontier = new PriorityQueue(
-    (a, b) => fScore(a) - fScore(b) || a.treeId - b.treeId,
-  )
+  const frontier = new PriorityQueue((a, b) => fScore(a) - fScore(b))
   const bestCost = new Map()
   let exploredStates = 0
   const tree = createSearchTreeTracker()

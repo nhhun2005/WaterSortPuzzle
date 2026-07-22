@@ -20,6 +20,9 @@ export function isEnd(bottles) {
 export function generateNextStates(bottles) {
   const nextStates = []
 
+  // This is the canonical action order shared by every search algorithm:
+  // lower source index first, then lower target index. Algorithms may choose
+  // different states to expand, but must not reorder the actions of a state.
   for (let source = 0; source < bottles.length; source += 1) {
     for (let target = 0; target < bottles.length; target += 1) {
       if (source === target) {

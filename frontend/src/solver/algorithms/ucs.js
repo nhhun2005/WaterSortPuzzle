@@ -9,9 +9,7 @@ import { PriorityQueue } from '../core/priorityQueue'
 export function ucs(initialBottles) {
   const startTime = performance.now()
 
-  const frontier = new PriorityQueue(
-    (a, b) => a.cost - b.cost || a.treeId - b.treeId,
-  )
+  const frontier = new PriorityQueue((a, b) => a.cost - b.cost)
   const bestCost = new Map()
   let exploredStates = 0
   const tree = createSearchTreeTracker()
