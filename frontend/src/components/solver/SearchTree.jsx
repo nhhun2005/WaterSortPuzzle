@@ -15,7 +15,12 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
   const totalSteps = goalNode ? goalNode.id : nodes.length
 
 
+  const totalLevels = layout ? layout.maxDepth + 1 : 1
+
+  const [viewMode, setViewMode] = useState('step')
   const [currentStep, setCurrentStep] = useState(1)
+  const [currentLevel, setCurrentLevel] = useState(totalLevels)
+  const [selectedId, setSelectedId] = useState(1)
 
   const scrollRef = useRef(null)
   const dragState = useRef(null)
@@ -23,14 +28,21 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
 
   useEffect(() => {
     setCurrentStep(1)
+    setSelectedId(1)
   }, [nodes])
+
+  useEffect(() => {
+    setCurrentLevel(totalLevels)
+  }, [totalLevels])
+
+  const focusId = viewMode === 'step' ? currentStep : selectedId
 
   const currentNode = useMemo(() => {
     if (!layout) {
       return null
     }
-    return layout.positioned.find((node) => node.id === currentStep) ?? null
-  }, [layout, currentStep])
+    return layout.positioned.find((node) => node.id === focusId) ?? null
+  }, [layout, focusId])
 
   useEffect(() => {
     if (onStepChange) {
@@ -73,6 +85,26 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
 
   function goToStep(step) {
     setCurrentStep(clamp(step, 1, totalSteps))
+  }
+
+  function handleLevelInput(event) {
+    const raw = event.target.value
+    if (raw === '') {
+      return
+    }
+    const parsed = Number.parseInt(raw, 10)
+    if (Number.isNaN(parsed)) {
+      return
+    }
+    setCurrentLevel(clamp(parsed, 1, totalLevels))
+  }
+
+  function handleNodeClick(node) {
+    if (viewMode === 'level') {
+      setSelectedId(node.id)
+    } else {
+      goToStep(node.id)
+    }
   }
 
   function handlePointerDown(event) {
@@ -129,7 +161,13 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
   const { positioned, edges, width, height, byId } = layout
 
   function isVisible(node) {
-    return Boolean(node) && node.id <= currentStep
+    if (!node) {
+      return false
+    }
+    if (viewMode === 'level') {
+      return node.depth < currentLevel
+    }
+    return node.id <= currentStep
   }
 
   function isEdgeVisible(edge) {
@@ -146,63 +184,151 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
       </div>
 
       <div className="tree-view-controls">
-        <div className="tree-level-controls">
-          <span className="tree-level-label">Bước</span>
-          <div className="tree-level-actions">
-            <button
-              type="button"
-              className="tree-level-btn"
-              onClick={() => setCurrentStep(1)}
-              disabled={currentStep <= 1}
-              aria-label="Bước đầu"
-              title="Bước đầu"
-            >
-              «
-            </button>
-            <button
-              type="button"
-              className="tree-level-btn"
-              onClick={() => setCurrentStep((current) => clamp(current - 1, 1, totalSteps))}
-              disabled={currentStep <= 1}
-              aria-label="Bước trước"
-              title="Bước trước"
-            >
-              ←
-            </button>
-            <input
-              type="number"
-              className="tree-level-input"
-              min={1}
-              max={totalSteps}
-              value={currentStep}
-              onChange={handleStepInput}
-              aria-label="Nhập số bước muốn tới"
-            />
-            <button
-              type="button"
-              className="tree-level-btn"
-              onClick={() => setCurrentStep((current) => clamp(current + 1, 1, totalSteps))}
-              disabled={currentStep >= totalSteps}
-              aria-label="Bước tiếp theo"
-              title="Bước tiếp theo"
-            >
-              →
-            </button>
-            <button
-              type="button"
-              className="tree-level-btn"
-              onClick={() => setCurrentStep(totalSteps)}
-              disabled={currentStep >= totalSteps}
-              aria-label="Bước cuối"
-              title="Bước cuối"
-            >
-              »
-            </button>
-          </div>
-          <span className="tree-level-hint">
-            Đang xem bước {currentStep}/{totalSteps}
-          </span>
+        <div className="tree-mode-switch" role="group" aria-label="Chế độ hiển thị cây">
+          <button
+            type="button"
+            className={viewMode === 'step' ? 'tree-mode-btn active' : 'tree-mode-btn'}
+            onClick={() => setViewMode('step')}
+            aria-pressed={viewMode === 'step'}
+          >
+            Theo bước
+          </button>
+          <button
+            type="button"
+            className={viewMode === 'level' ? 'tree-mode-btn active' : 'tree-mode-btn'}
+            onClick={() => setViewMode('level')}
+            aria-pressed={viewMode === 'level'}
+          >
+            Theo tầng
+          </button>
         </div>
+
+        {viewMode === 'step' ? (
+          <div className="tree-level-controls">
+            <span className="tree-level-label">Bước</span>
+            <div className="tree-level-actions">
+              <button
+                type="button"
+                className="tree-level-btn"
+                onClick={() => setCurrentStep(1)}
+                disabled={currentStep <= 1}
+                aria-label="Bước đầu"
+                title="Bước đầu"
+              >
+                «
+              </button>
+              <button
+                type="button"
+                className="tree-level-btn"
+                onClick={() => setCurrentStep((current) => clamp(current - 1, 1, totalSteps))}
+                disabled={currentStep <= 1}
+                aria-label="Bước trước"
+                title="Bước trước"
+              >
+                ←
+              </button>
+              <input
+                type="number"
+                className="tree-level-input"
+                min={1}
+                max={totalSteps}
+                value={currentStep}
+                onChange={handleStepInput}
+                aria-label="Nhập số bước muốn tới"
+              />
+              <button
+                type="button"
+                className="tree-level-btn"
+                onClick={() => setCurrentStep((current) => clamp(current + 1, 1, totalSteps))}
+                disabled={currentStep >= totalSteps}
+                aria-label="Bước tiếp theo"
+                title="Bước tiếp theo"
+              >
+                →
+              </button>
+              <button
+                type="button"
+                className="tree-level-btn"
+                onClick={() => setCurrentStep(totalSteps)}
+                disabled={currentStep >= totalSteps}
+                aria-label="Bước cuối"
+                title="Bước cuối"
+              >
+                »
+              </button>
+            </div>
+            <span className="tree-level-hint">
+              Đang xem bước {currentStep}/{totalSteps}
+            </span>
+          </div>
+        ) : (
+          <div className="tree-level-controls">
+            <span className="tree-level-label">Tầng</span>
+            <div className="tree-level-actions">
+              <button
+                type="button"
+                className="tree-level-btn"
+                onClick={() => setCurrentLevel(1)}
+                disabled={currentLevel <= 1}
+                aria-label="Tầng đầu"
+                title="Tầng đầu"
+              >
+                «
+              </button>
+              <button
+                type="button"
+                className="tree-level-btn"
+                onClick={() => setCurrentLevel((current) => clamp(current - 1, 1, totalLevels))}
+                disabled={currentLevel <= 1}
+                aria-label="Bớt một tầng"
+                title="Bớt một tầng"
+              >
+                ←
+              </button>
+              <input
+                type="number"
+                className="tree-level-input"
+                min={1}
+                max={totalLevels}
+                value={currentLevel}
+                onChange={handleLevelInput}
+                aria-label="Nhập số tầng muốn hiển thị"
+              />
+              <button
+                type="button"
+                className="tree-level-btn"
+                onClick={() => setCurrentLevel((current) => clamp(current + 1, 1, totalLevels))}
+                disabled={currentLevel >= totalLevels}
+                aria-label="Thêm một tầng"
+                title="Thêm một tầng"
+              >
+                →
+              </button>
+              <button
+                type="button"
+                className="tree-level-btn"
+                onClick={() => setCurrentLevel(totalLevels)}
+                disabled={currentLevel >= totalLevels}
+                aria-label="Tất cả tầng"
+                title="Tất cả tầng"
+              >
+                »
+              </button>
+            </div>
+            <button
+              type="button"
+              className="tree-level-all"
+              onClick={() => setCurrentLevel(totalLevels)}
+              disabled={currentLevel >= totalLevels}
+            >
+              Toàn bộ tầng
+            </button>
+            <span className="tree-level-hint">
+              Đang hiển thị {currentLevel}/{totalLevels} tầng
+            </span>
+          </div>
+        )}
+
         <div className="tree-selected-action">
           <span>Hành động đang chọn</span>
           <strong>{selectedAction}</strong>
@@ -249,7 +375,7 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
               ? `Lọ ${node.move.from} → Lọ ${node.move.to}`
               : 'Gốc'
             const fScore = algorithm === 'A*' ? node.cost + node.heuristic : null
-            const isFocused = node.id === currentStep
+            const isFocused = node.id === focusId
             const className = [
               'tree-node',
               node.isSolutionPath ? 'solution-path' : '',
@@ -265,11 +391,11 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
                 aria-label={`Xem ${label}`}
                 className={className}
                 key={node.id}
-                onClick={() => goToStep(node.id)}
+                onClick={() => handleNodeClick(node)}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter' || event.key === ' ') {
                     event.preventDefault()
-                    goToStep(node.id)
+                    handleNodeClick(node)
                   }
                 }}
                 onPointerDown={(event) => event.stopPropagation()}
@@ -377,7 +503,7 @@ function buildLayout(nodes) {
   const width = PADDING * 2 + (nextColumn > 0 ? nextColumn : 1) * (NODE_WIDTH + H_GAP)
   const height = PADDING * 2 + (maxDepth + 1) * (NODE_HEIGHT + V_GAP)
 
-  return { positioned, edges, width, height, byId }
+  return { positioned, edges, width, height, byId, maxDepth }
 }
 
 function compareActions(a, b) {
