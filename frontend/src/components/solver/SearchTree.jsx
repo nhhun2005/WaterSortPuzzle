@@ -317,6 +317,14 @@ function buildLayout(nodes) {
     }
   })
 
+  // Tree node IDs reflect each algorithm's frontier/exploration order. They
+  // must not determine the visual order of actions belonging to one state.
+  // Always render sibling actions in the canonical source/target order used
+  // by generateNextStates, without changing the solver's stored nodes.
+  byId.forEach((node) => {
+    node.children.sort(compareActions)
+  })
+
   if (!root) {
     return null
   }
@@ -370,6 +378,15 @@ function buildLayout(nodes) {
   const height = PADDING * 2 + (maxDepth + 1) * (NODE_HEIGHT + V_GAP)
 
   return { positioned, edges, width, height, byId }
+}
+
+function compareActions(a, b) {
+  const fromDifference = (a.move?.from ?? 0) - (b.move?.from ?? 0)
+  if (fromDifference !== 0) {
+    return fromDifference
+  }
+
+  return (a.move?.to ?? 0) - (b.move?.to ?? 0)
 }
 
 function describeAction(node) {
