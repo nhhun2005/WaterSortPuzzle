@@ -33,9 +33,12 @@ export function dfs(initialBottles) {
       return buildResult(true, current, visited.size, exploredStates, startTime, tree)
     }
 
-    const nextStates = generateNextStates(current.bottles)
-    for (let i = nextStates.length - 1; i >= 0; i -= 1) {
-      const next = nextStates[i]
+    const children = []
+
+    // Generate and record successors in the same canonical order as the other
+    // algorithms. Stack insertion is reversed separately so DFS still explores
+    // the first generated successor first.
+    for (const next of generateNextStates(current.bottles)) {
       const key = serializeState(next.bottles)
       if (!visited.has(key)) {
         visited.add(key)
@@ -48,8 +51,12 @@ export function dfs(initialBottles) {
           0,
         )
         tree.add(child, key)
-        stack.push(child)
+        children.push(child)
       }
+    }
+
+    for (let i = children.length - 1; i >= 0; i -= 1) {
+      stack.push(children[i])
     }
   }
 
