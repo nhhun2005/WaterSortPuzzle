@@ -9,13 +9,18 @@ import { PriorityQueue } from '../core/priorityQueue'
 export function ucs(initialBottles) {
   const startTime = performance.now()
 
-  const frontier = new PriorityQueue((a, b) => a.cost - b.cost)
+  const frontier = new PriorityQueue(
+    (a, b) => a.cost - b.cost || a.insertionOrder - b.insertionOrder,
+  )
   const bestCost = new Map()
+  let nextInsertionOrder = 0
   let exploredStates = 0
   const tree = createSearchTreeTracker()
 
   const rootKey = serializeState(initialBottles)
   const root = createNode(initialBottles, null, null, 0, 0, 0)
+  root.insertionOrder = nextInsertionOrder
+  nextInsertionOrder += 1
   tree.add(root, rootKey)
   frontier.push(root)
   bestCost.set(rootKey, 0)
@@ -55,6 +60,8 @@ export function ucs(initialBottles) {
           newCost,
           0,
         )
+        child.insertionOrder = nextInsertionOrder
+        nextInsertionOrder += 1
         tree.add(child, key)
         frontier.push(child)
       }
