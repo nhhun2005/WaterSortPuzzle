@@ -1,0 +1,129 @@
+.paper-screen {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.paper-header h1 {
+  margin: 0 0 8px;
+  color: var(--ink-strong);
+  font-size: 28px;
+}
+
+.paper-header p {
+  margin: 0 0 12px;
+  color: var(--muted);
+}
+
+.paper-header code {
+  background: rgba(37, 119, 232, 0.1);
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-size: 0.9em;
+}
+
+.paper-link {
+  color: var(--blue);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.paper-link:hover {
+  text-decoration: underline;
+}
+
+.paper-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid rgba(49, 80, 107, 0.15);
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.paper-controls-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.paper-state h2,
+.paper-result h2 {
+  margin: 0 0 10px;
+  color: var(--ink-strong);
+  font-size: 20px;
+}
+
+.paper-result h3 {
+  margin: 18px 0 8px;
+  color: var(--ink-strong);
+  font-size: 16px;
+}
+
+.paper-compact {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #0f2b42;
+  color: #d7ecff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 15px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.paper-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.paper-note {
+  color: var(--orange);
+  font-weight: 600;
+}
+
+.paper-trace {
+  margin: 0;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.paper-trace li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.paper-trace-move {
+  min-width: 64px;
+  font-weight: 700;
+  color: var(--blue);
+}
+
+.paper-trace-state {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  background: rgba(37, 119, 232, 0.08);
+  padding: 3px 8px;
+  border-radius: 8px;
+  color: var(--ink-strong);
+}
+
+.paper-tree {
+  margin-top: 4px;
+}
+
+.paper-result h3 + .paper-tree {
+  margin-top: 0;
+}

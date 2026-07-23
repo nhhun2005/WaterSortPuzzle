@@ -2,12 +2,12 @@ export const CAPACITY = 4
 
 export const BOTTLE_COUNT = 5
 
-export const PUZZLE_COLORS = ['red', 'green', 'blue']
+export const PUZZLE_COLORS = ['R', 'G', 'B']
 
 export const COLOR_LABELS = {
-  red: 'Đỏ',
-  green: 'Xanh lá',
-  blue: 'Xanh dương',
+  R: 'Đỏ',
+  G: 'Xanh lá',
+  B: 'Xanh dương',
 }
 
 export const ALGORITHMS = ['BFS', 'DFS', 'UCS', 'Greedy', 'A*']
@@ -25,7 +25,6 @@ export const HEURISTIC_OPTIONS = [
   { value: 'Incomplete bottles', label: 'Số lọ chưa hoàn thiện' },
   { value: 'Color transition count', label: 'Số lần chuyển màu' },
 ]
-
 
 export function algorithmUsesHeuristic(algorithm) {
   return HEURISTIC_ALGORITHMS.includes(algorithm)

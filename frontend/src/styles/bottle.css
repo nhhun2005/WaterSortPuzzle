@@ -119,15 +119,15 @@
   background: rgba(255, 255, 255, 0.42);
 }
 
-.liquid-layer[data-color='red'] {
+.liquid-layer[data-color='R'] {
   background: linear-gradient(180deg, #ff7e9b, #ef3e64);
 }
 
-.liquid-layer[data-color='green'] {
+.liquid-layer[data-color='G'] {
   background: linear-gradient(180deg, #7eed91, #22bf63);
 }
 
-.liquid-layer[data-color='blue'] {
+.liquid-layer[data-color='B'] {
   background: linear-gradient(180deg, #5ea8ff, #2368f2);
 }
 

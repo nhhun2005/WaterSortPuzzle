@@ -287,17 +287,17 @@
   outline-offset: 1px;
 }
 
-.editor-cell[data-color="red"] {
+.editor-cell[data-color="R"] {
   background: linear-gradient(180deg, #ff7e9b, #ef3e64);
   color: white;
 }
 
-.editor-cell[data-color="green"] {
+.editor-cell[data-color="G"] {
   background: linear-gradient(180deg, #7eed91, #22bf63);
   color: white;
 }
 
-.editor-cell[data-color="blue"] {
+.editor-cell[data-color="B"] {
   background: linear-gradient(180deg, #5ea8ff, #2368f2);
   color: white;
 }
