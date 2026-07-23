@@ -9,13 +9,14 @@ const V_GAP = 54
 const PADDING = 24
 
 function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepChange }) {
-  const layout = useMemo(() => buildLayout(nodes), [nodes])
-
   const goalNode = useMemo(() => nodes.find((node) => node.isGoal) ?? null, [nodes])
   const totalSteps = goalNode ? goalNode.id : nodes.length
 
-
-  const totalLevels = layout ? layout.maxDepth + 1 : 1
+  const maxDepth = useMemo(
+    () => nodes.reduce((max, node) => Math.max(max, node.depth ?? 0), 0),
+    [nodes],
+  )
+  const totalLevels = nodes.length > 0 ? maxDepth + 1 : 1
 
   const [viewMode, setViewMode] = useState('step')
   const [currentStep, setCurrentStep] = useState(1)
@@ -37,12 +38,26 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
 
   const focusId = viewMode === 'step' ? currentStep : selectedId
 
-  const currentNode = useMemo(() => {
-    if (!layout) {
-      return null
+  // Only lay out the nodes that are currently visible so early steps/levels
+  // are packed tightly instead of inheriting the final tree's spacing.
+  const visibleNodes = useMemo(() => {
+    if (viewMode === 'level') {
+      return nodes.filter((node) => (node.depth ?? 0) < currentLevel)
     }
-    return layout.positioned.find((node) => node.id === focusId) ?? null
-  }, [layout, focusId])
+    return nodes.filter((node) => node.id <= currentStep)
+  }, [nodes, viewMode, currentStep, currentLevel])
+
+  const layout = useMemo(() => buildLayout(visibleNodes), [visibleNodes])
+
+  const currentNode = useMemo(
+    () => nodes.find((node) => node.id === focusId) ?? null,
+    [nodes, focusId],
+  )
+
+  const focusLayoutNode = useMemo(
+    () => layout?.positioned.find((node) => node.id === focusId) ?? null,
+    [layout, focusId],
+  )
 
   useEffect(() => {
     if (onStepChange) {
@@ -52,14 +67,14 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
 
   useEffect(() => {
     const scroller = scrollRef.current
-    if (!scroller || !currentNode) {
+    if (!scroller || !focusLayoutNode) {
       return
     }
-    const targetLeft = currentNode.px + NODE_WIDTH / 2 - scroller.clientWidth / 2
-    const targetTop = currentNode.py + NODE_HEIGHT / 2 - scroller.clientHeight / 2
+    const targetLeft = focusLayoutNode.px + NODE_WIDTH / 2 - scroller.clientWidth / 2
+    const targetTop = focusLayoutNode.py + NODE_HEIGHT / 2 - scroller.clientHeight / 2
     scroller.scrollLeft = Math.max(0, targetLeft)
     scroller.scrollTop = Math.max(0, targetTop)
-  }, [currentNode])
+  }, [focusLayoutNode])
 
   function clamp(value, min, max) {
     if (value < min) {
@@ -158,21 +173,7 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
     return <p className="tree-empty">Không dựng được cây tìm kiếm.</p>
   }
 
-  const { positioned, edges, width, height, byId } = layout
-
-  function isVisible(node) {
-    if (!node) {
-      return false
-    }
-    if (viewMode === 'level') {
-      return node.depth < currentLevel
-    }
-    return node.id <= currentStep
-  }
-
-  function isEdgeVisible(edge) {
-    return isVisible(byId.get(edge.fromId)) && isVisible(byId.get(edge.toId))
-  }
+  const { positioned, edges, width, height } = layout
 
   const selectedAction = describeAction(currentNode)
 
@@ -353,9 +354,6 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
             xmlns="http://www.w3.org/2000/svg"
           >
             {edges.map((edge) => {
-              if (!isEdgeVisible(edge)) {
-                return null
-              }
               return (
                 <path
                   className={edge.solution ? 'tree-edge solution-edge' : 'tree-edge'}
@@ -368,9 +366,6 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
           </svg>
 
           {positioned.map((node) => {
-            if (!isVisible(node)) {
-              return null
-            }
             const label = node.move
               ? `Lọ ${node.move.from} → Lọ ${node.move.to}`
               : 'Gốc'
