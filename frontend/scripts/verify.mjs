@@ -162,7 +162,13 @@ console.log('== Test 18: algorithm regression ==')
 
   const baseline = {
     'BFS|': { solved: true, steps: 6, visited: 558, explored: 356, moves: '2->1 3->1 2->3 4->1 4->3 2->4' },
-    'DFS|': { solved: true, steps: 20, visited: 69, explored: 21 },
+    'DFS|': {
+      solved: true,
+      steps: 19,
+      visited: 74,
+      explored: 20,
+      moves: '4->5 3->5 5->1 4->5 3->5 4->3 5->4 3->5 4->3 2->4 3->2 4->1 5->4 3->5 4->3 5->4 2->4 3->5 2->5',
+    },
     'UCS|': { solved: true, steps: 6, visited: 558, explored: 356, moves: '2->1 3->1 2->3 4->1 4->3 2->4' },
     'Greedy|Combined': { solved: true, steps: 6, visited: 43, explored: 8, moves: '2->3 3->1 4->1 2->3 4->3 2->4' },
     'Greedy|Incomplete bottles': { solved: true, steps: 6, visited: 56, explored: 12, moves: '2->3 4->1 3->1 2->3 4->3 2->4' },
@@ -203,6 +209,14 @@ console.log('== Test 18: algorithm regression ==')
     check(`Test 18 ${bkey} stats`, actual, expected)
     if (base.moves) {
       check(`Test 18 ${bkey} moves`, movesToStr(r.moves), base.moves)
+    }
+    if (algo === 'DFS') {
+      const rootChildren = r.searchTree.filter((node) => node.parentId === 1)
+      const rightmostChild = rootChildren.at(-1)
+      ok(
+        'Test 18 DFS explores the rightmost root branch first',
+        rightmostChild?.expanded && rightmostChild?.isSolutionPath,
+      )
     }
   }
 }

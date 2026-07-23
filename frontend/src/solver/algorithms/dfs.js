@@ -35,9 +35,9 @@ export function dfs(initialBottles) {
 
     const children = []
 
-    // Generate and record successors in the same canonical order as the other
-    // algorithms. Stack insertion is reversed separately so DFS still explores
-    // the first generated successor first.
+    // Generate and record successors from left to right, matching the visual
+    // search tree. Pushing them in that same order makes stack.pop() select the
+    // rightmost child first.
     for (const next of generateNextStates(current.bottles)) {
       const key = serializeState(next.bottles)
       if (!visited.has(key)) {
@@ -55,8 +55,8 @@ export function dfs(initialBottles) {
       }
     }
 
-    for (let i = children.length - 1; i >= 0; i -= 1) {
-      stack.push(children[i])
+    for (const child of children) {
+      stack.push(child)
     }
   }
 
