@@ -8,6 +8,7 @@ Anh chị hãy xác định các thành phần của bài toán. Sử dụng cá
 học phần Trí tuệ nhân tạo để giải bài toán này.
 
 Cách để chạy:
+```bash
 
   git clone https://github.com/nhhun2005/WaterSortPuzzle.git
   
@@ -16,7 +17,7 @@ Cách để chạy:
   npm i 
   
   npm run dev
-  
+ ``` 
 
 ***Team Member***
 + B2303872 - Nguyễn Ngọc Phương Huỳnh
@@ -30,6 +31,8 @@ Determine components of the problem. Use algorithms from the course to solve the
 
 How to run:
 
+```bash
+
   git clone https://github.com/nhhun2005/WaterSortPuzzle.git
   
   cd ./WaterSortPuzzle/frontend
@@ -37,6 +40,7 @@ How to run:
   npm i 
   
   npm run dev
+ ``` 
   
 
 
