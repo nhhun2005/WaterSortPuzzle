@@ -13,6 +13,8 @@ function ResultPanel({ result, usesHeuristic, onStepChange, bottles }) {
         cost: 0,
         heuristic: 0,
         bottles: bottles ?? [],
+        generatedAtStep: 0,
+        expandedAtStep: null,
         expanded: false,
         isGoal: false,
         isSolutionPath: false,

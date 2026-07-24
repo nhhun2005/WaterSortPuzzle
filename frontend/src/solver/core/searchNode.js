@@ -21,6 +21,7 @@ export function reconstructMoves(goalNode) {
 export function createSearchTreeTracker() {
   const nodes = []
   let nextId = 1
+  let currentExpansionStep = 0
   const truncated = false
 
   function add(searchNode, stateKey) {
@@ -37,6 +38,8 @@ export function createSearchTreeTracker() {
       heuristic: searchNode.heuristic,
       bottles: searchNode.bottles.map((bottle) => [...bottle]),
       stateKey,
+      generatedAtStep: currentExpansionStep,
+      expandedAtStep: null,
       expanded: false,
       isGoal: false,
       isSolutionPath: false,
@@ -56,7 +59,11 @@ export function createSearchTreeTracker() {
   }
 
   function markExpanded(searchNode) {
-    update(searchNode.treeId, { expanded: true })
+    currentExpansionStep += 1
+    update(searchNode.treeId, {
+      expanded: true,
+      expandedAtStep: currentExpansionStep,
+    })
   }
 
   function markGoal(searchNode) {

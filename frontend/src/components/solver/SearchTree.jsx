@@ -9,8 +9,15 @@ const V_GAP = 54
 const PADDING = 24
 
 function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepChange }) {
-  const goalNode = useMemo(() => nodes.find((node) => node.isGoal) ?? null, [nodes])
-  const totalSteps = goalNode ? goalNode.id : nodes.length
+  const expandedNodes = useMemo(
+    () =>
+      nodes
+        .filter((node) => node.expandedAtStep != null)
+        .sort((a, b) => a.expandedAtStep - b.expandedAtStep),
+    [nodes],
+  )
+  const hasExpansionSteps = expandedNodes.length > 0
+  const totalSteps = hasExpansionSteps ? expandedNodes.length : nodes.length
 
   const maxDepth = useMemo(
     () => nodes.reduce((max, node) => Math.max(max, node.depth ?? 0), 0),
@@ -36,7 +43,14 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
     setCurrentLevel(totalLevels)
   }, [totalLevels])
 
-  const focusId = viewMode === 'step' ? currentStep : selectedId
+  const stepNode = useMemo(() => {
+    if (!hasExpansionSteps) {
+      return nodes.find((node) => node.id === currentStep) ?? null
+    }
+    return expandedNodes.find((node) => node.expandedAtStep === currentStep) ?? null
+  }, [nodes, expandedNodes, hasExpansionSteps, currentStep])
+
+  const focusId = viewMode === 'step' ? stepNode?.id : selectedId
 
   // Only lay out the nodes that are currently visible so early steps/levels
   // are packed tightly instead of inheriting the final tree's spacing.
@@ -44,14 +58,20 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
     if (viewMode === 'level') {
       return nodes.filter((node) => (node.depth ?? 0) < currentLevel)
     }
-    return nodes.filter((node) => node.id <= currentStep)
-  }, [nodes, viewMode, currentStep, currentLevel])
+    if (!hasExpansionSteps) {
+      return nodes.filter((node) => node.id <= currentStep)
+    }
+
+    // One search step is one frontier expansion. Show the expanded state and
+    // every successor accepted from it as a single visual update.
+    return nodes.filter((node) => (node.generatedAtStep ?? 0) <= currentStep)
+  }, [nodes, viewMode, currentStep, currentLevel, hasExpansionSteps])
 
   const layout = useMemo(() => buildLayout(visibleNodes), [visibleNodes])
 
   const currentNode = useMemo(
-    () => nodes.find((node) => node.id === focusId) ?? null,
-    [nodes, focusId],
+    () => (viewMode === 'step' ? stepNode : nodes.find((node) => node.id === focusId) ?? null),
+    [nodes, focusId, stepNode, viewMode],
   )
 
   const focusLayoutNode = useMemo(
@@ -118,7 +138,7 @@ function SearchTree({ algorithm, nodes = [], truncated, usesHeuristic, onStepCha
     if (viewMode === 'level') {
       setSelectedId(node.id)
     } else {
-      goToStep(node.id)
+      goToStep(node.expandedAtStep ?? node.generatedAtStep ?? node.id)
     }
   }
 
